@@ -1,0 +1,5 @@
+py -3 -m venv venv
+venv\Scripts\activate
+Set FLASK_ENV=development
+pip install mysql-connector-python
+pip install flask
