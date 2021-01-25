@@ -1,9 +1,9 @@
-from flask import Flask,render_template, request, flash, redirect, url_for, session
+from flask import Flask,render_template, request, flash, redirect, session, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
-from flask_mysqldb import MySQL
+from  passlib.hash import  pbkdf2_sha1 as hash
 import mysql.connector
-import MySQLdb.cursors
+
 
 import os
 import string
@@ -28,7 +28,7 @@ mydb = mysql.connector.connect(
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mycursor = mydb.cursor()
 
-mysql = MySQL(app)
+
 
 
 #mycursor.execute("select * from users")
@@ -38,6 +38,8 @@ mysql = MySQL(app)
 
 
 ## functions
+
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -57,23 +59,44 @@ def jsonToTuple(data):
     
     return tuple(mydata)   
 
+def isUserLogedin():
+    logedin = session.get('loggedin')
+   
+    if  logedin == None or logedin == False :
+        return False
+    return True    
 
 ## end of functions
 
 ## Start home
 
+# @app.before_request
+# def func():
+#      print("Func you")
+
+# @app.after_request
+# def funcfunc(response):
+#      print(response)
+#      return response
+
 @app.route("/")
 def home():
+    
+    if not isUserLogedin():
+        return redirect(url_for("login"))
+    
     return render_template("index.html", pagename = "Home Page")
 
 ## End home
 
 ## Start  upload files
 
-@app.route('/Check-percentage.html', methods = ['GET', 'POST'])
+@app.route('/checkPlagiarism', methods = ['GET', 'POST'])
 def upload_file():
+    if not isUserLogedin():
+        return redirect(url_for("login"))
     if(request.method == 'GET'):
-        return render_template('/Check-percentage.html', pagename = 'Check Plagiarism')
+        return render_template('Check-percentage.html', pagename = 'Check Plagiarism')
     else:
         # check if the post request has the file part
         if 'files[]' not in request.files:
@@ -103,39 +126,48 @@ def upload_file():
 
 ## Start User Registeration
 
-@app.route('/registration.html', methods = ['GET', 'POST'])
+@app.route('/registration', methods = ['GET', 'POST'])
 def register_user():
+    if isUserLogedin():
+        return redirect(url_for("home"))
     if(request.method == "GET"):
         return render_template("registration.html" , pagename = "registration")
     else:
-        sql = "INSERT INTO user (name,email,password) VALUES (%s, %s, %s)"
-        val = jsonToTuple(request.form)
+        form = request.form.to_dict()
+        form["password"] = hash.encrypt(request.form.get("password"))
+        
+        del form["submit"]
+        sql = "INSERT INTO users (name,email,password) VALUES (%s, %s, %s)"
+        val = jsonToTuple(form)
         mycursor.execute(sql,val)
         mydb.commit()
-        return "user is registered"
+        return redirect(url_for("login"))
 
 ## End User Registeration
 
 ## Start log-in
 
-@app.route('/sign-in.html', methods=['GET', 'POST'])
-def log_in_user():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    
+    if isUserLogedin():
+        return redirect(url_for("home"))
     msg = '' 
     if(request.method == 'POST'): 
         email = request.form['email'] 
         password = request.form['password'] 
-        myCursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor) 
-        myCursor.execute('SELECT * FROM user WHERE email = % s AND password = % s', (email, password)) 
-        account = myCursor.fetchone() 
-        if account: 
+        mycursor.execute('SELECT id,email, name, password FROM users WHERE email = %s', (email,)) 
+        account = mycursor.fetchone()
+        if account and hash.verify(password , account[3]): 
             session['loggedin'] = True
-            session['id'] = account['id'] 
-            session['username'] = account['username'] 
+            session['id'] = account[0] 
+            session['email'] = account[1]
+            session['name'] = account[2]
             msg = 'Logged in successfully !'
-            return render_template('index.html', msg = msg) 
+            return redirect(url_for('home')) 
         else: 
-            msg = 'Incorrect username / password !'
-    return render_template('sign-in.html', pagename = 'Log-in', msg = msg)
+            msg = 'Incorrect email / password !'
+    return render_template('sign-in.html', pagename = 'Login', msg = msg)
 
 ## End log-in
 
@@ -145,8 +177,9 @@ def log_in_user():
 def logout(): 
     session.pop('loggedin', None) 
     session.pop('id', None) 
-    session.pop('username', None) 
-    return redirect(url_for('sign-in.html'))
+    session.pop('email', None)
+    session.pop('name', None)
+    return redirect(url_for('login'))
 
 ## End log-out
 
