@@ -39,12 +39,9 @@ mycursor = mydb.cursor()
 
 ## functions
 
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 def changeFileName(fileName):
     letters = string.ascii_letters
@@ -135,7 +132,6 @@ def register_user():
     else:
         form = request.form.to_dict()
         form["password"] = hash.encrypt(request.form.get("password"))
-        
         del form["submit"]
         sql = "INSERT INTO users (name,email,password) VALUES (%s, %s, %s)"
         val = jsonToTuple(form)
@@ -149,14 +145,13 @@ def register_user():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    
     if isUserLogedin():
         return redirect(url_for("home"))
     msg = '' 
     if(request.method == 'POST'): 
         email = request.form['email'] 
         password = request.form['password'] 
-        mycursor.execute('SELECT id,email, name, password FROM users WHERE email = %s', (email,)) 
+        mycursor.execute('SELECT id, email, name, password FROM users WHERE email = %s', (email,)) 
         account = mycursor.fetchone()
         if account and hash.verify(password , account[3]): 
             session['loggedin'] = True
