@@ -42,21 +42,21 @@
             </ul>
             {%endif%}
             {% if currentUser %}
-            <ul class="nav navbar-nav navbar-right ml-3">
-                <li class="nav-item"><a href="{{url_for('logout')}}" class="primary_btn">Log out</a></li>
+            <ul class="nav navbar-nav navbar-right ml-0 mr-3">
+                <li class="nav-item"><a href="{{url_for('logout')}}" class="primary_btn">Log Out</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right ml-3 myprimary_btn">
-                <li class="nav-item submenu dropdown" style="width: 20px; height: 25px;">
+            <ul class="nav navbar-nav navbar-left ml-0 myprimary_btn">
+                <li class="nav-item submenu dropdown" id="mymenu">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
                         aria-haspopup="true" aria-expanded="false"><i style="position: absolute;
                                                                     top: 50%;
                                                                     left: 50%;
                                                                     transform: translate(-40%, -50%); color: #222222;"
                             class="far fa-user"></i></a>
-                    <ul class="dropdown-menu" style="margin-top: 20px;">
+                    <ul class="dropdown-menu" id="mydrop" style="left: -700%;">
                         <li class="nav-item"><a class="nav-link profileLink" href="Check-grammar.html"> 
                             <div style="width: 100%; text-align: center;">
-                                <img src="https://voicebuffalo.org/wp-content/uploads/2017/01/person-placeholder.jpg" alt="">
+                                <img class="rounded-circle" src="../static/uploads/users/{{currentUser['image']}}" alt="">
                             </div>
                             {{currentUser["name"]}}
                         </a>
