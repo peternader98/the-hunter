@@ -1,0 +1,71 @@
+<nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <a class="navbar-brand logo_h" href="/">
+            <font size="+5" face=impact color="red">Investigator</font>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+            <ul class="nav navbar-nav menu_nav justify-content-center">
+                <li class="nav-item "><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item submenu dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                        aria-haspopup="true" aria-expanded="false">Plagiarism Checker</a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a class="nav-link" href="{{url_for('upload_file')}}">Check percentage</a>
+                        <li class="nav-item"><a class="nav-link" href="{{url_for('upload_file')}}">Check the type</a>
+                        <li class="nav-item"><a class="nav-link" href="{{url_for('upload_file')}}">Check the level</a>
+                    </ul>
+                </li>
+                <li class="nav-item submenu dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                        aria-haspopup="true" aria-expanded="false">Sentence Checker</a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a class="nav-link" href="Check-grammar.html">Check grammar</a>
+                        <li class="nav-item"><a class="nav-link" href="Check-vocabulary.html">Check vocabulary</a>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="{{url_for('about_us')}}">About US</a></li>
+            </ul>
+            {% if not currentUser %}
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item"><a href="{{url_for('register_user')}}" class="primary_btn">Register</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right ml-3">
+                <li class="nav-item"><a href="{{url_for('login')}}" class="primary_btn">Login</a></li>
+            </ul>
+            {%endif%}
+            {% if currentUser %}
+            <ul class="nav navbar-nav navbar-right ml-3">
+                <li class="nav-item"><a href="{{url_for('logout')}}" class="primary_btn">Log out</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right ml-3 myprimary_btn">
+                <li class="nav-item submenu dropdown" style="width: 20px; height: 25px;">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                        aria-haspopup="true" aria-expanded="false"><i style="position: absolute;
+                                                                    top: 50%;
+                                                                    left: 50%;
+                                                                    transform: translate(-40%, -50%); color: #222222;"
+                            class="far fa-user"></i></a>
+                    <ul class="dropdown-menu" style="margin-top: 20px;">
+                        <li class="nav-item"><a class="nav-link profileLink" href="Check-grammar.html"> 
+                            <div style="width: 100%; text-align: center;">
+                                <img src="https://voicebuffalo.org/wp-content/uploads/2017/01/person-placeholder.jpg" alt="">
+                            </div>
+                            {{currentUser["name"]}}
+                        </a>
+                        <li class="nav-item"><a class="nav-link" href="Check-vocabulary.html"><i class="fas fa-cog"></i> Settings</a>
+                    </ul>
+                </li>
+
+            </ul>
+            {%endif%}
+        </div>
+    </div>
+</nav>

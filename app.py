@@ -39,12 +39,9 @@ mycursor = mydb.cursor()
 
 ## functions
 
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 def changeFileName(fileName):
     letters = string.ascii_letters
@@ -64,8 +61,18 @@ def isUserLogedin():
    
     if  logedin == None or logedin == False :
         return False
-    return True    
+    return True  
 
+
+def getCurrentUser():
+    
+    if not isUserLogedin():
+        return None
+    dec = {}
+    dec["user_id"] = session['id']
+    dec["email"] = session['email']
+    dec["name"] = session['name']
+    return dec
 ## end of functions
 
 ## Start home
@@ -82,10 +89,9 @@ def isUserLogedin():
 @app.route("/")
 def home():
     
-    if not isUserLogedin():
-        return redirect(url_for("login"))
     
-    return render_template("index.html", pagename = "Home Page")
+    
+    return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser())
 
 ## End home
 
@@ -135,7 +141,6 @@ def register_user():
     else:
         form = request.form.to_dict()
         form["password"] = hash.encrypt(request.form.get("password"))
-        
         del form["submit"]
         sql = "INSERT INTO users (name,email,password) VALUES (%s, %s, %s)"
         val = jsonToTuple(form)
@@ -149,14 +154,13 @@ def register_user():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    
     if isUserLogedin():
         return redirect(url_for("home"))
     msg = '' 
     if(request.method == 'POST'): 
         email = request.form['email'] 
         password = request.form['password'] 
-        mycursor.execute('SELECT id,email, name, password FROM users WHERE email = %s', (email,)) 
+        mycursor.execute('SELECT id, email, name, password FROM users WHERE email = %s', (email,)) 
         account = mycursor.fetchone()
         if account and hash.verify(password , account[3]): 
             session['loggedin'] = True
@@ -179,13 +183,13 @@ def logout():
     session.pop('id', None) 
     session.pop('email', None)
     session.pop('name', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('home'))
 
 ## End log-out
 
 ## Start Writing-Tips
 
-@app.route('/Writing-Tips.html')
+@app.route('/Writing-Tips')
 def writing_tips():
     return render_template('Writing-Tips.html', pagename = 'Writing Tips')
 
@@ -193,7 +197,7 @@ def writing_tips():
 
 ## Start about-us
 
-@app.route('/About-Us.html')
+@app.route('/Aboutus')
 def about_us():
     return render_template('About-Us.html', pagename = 'About us')
 
