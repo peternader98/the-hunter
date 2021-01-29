@@ -72,6 +72,7 @@ def getCurrentUser():
     dec["user_id"] = session['id']
     dec["email"] = session['email']
     dec["name"] = session['name']
+    dec["image"] = session['image']
     return dec
 ## end of functions
 
@@ -102,7 +103,7 @@ def upload_file():
     if not isUserLogedin():
         return redirect(url_for("login"))
     if(request.method == 'GET'):
-        return render_template('Check-percentage.html', pagename = 'Check Plagiarism')
+        return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
     else:
         # check if the post request has the file part
         if 'files[]' not in request.files:
@@ -121,12 +122,12 @@ def upload_file():
         for file in files:
             if file and allowed_file(file.filename):
                 filename = changeFileName(secure_filename(file.filename))
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/usersFiles/", filename))
 
         #return "file apploded"
         #return redirect(url_for('uploaded_file', filename=filename))
 
-    return "please slelect a file of type of" +  str(ALLOWED_EXTENSIONS)   
+    return redirect(url_for('upload_file'))
 
 ## End  upload files
 
@@ -136,14 +137,26 @@ def upload_file():
 def register_user():
     if isUserLogedin():
         return redirect(url_for("home"))
+
+   
     if(request.method == "GET"):
         return render_template("registration.html" , pagename = "registration")
     else:
+        filename = "placeholder.png"
+
+        file = request.files['file']
+        if file.filename != "":
+            filename = changeFileName(secure_filename(file.filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/users/",  filename))
+       
         form = request.form.to_dict()
+        form["image"] = filename
         form["password"] = hash.encrypt(request.form.get("password"))
-        del form["submit"]
-        sql = "INSERT INTO users (name,email,password) VALUES (%s, %s, %s)"
+        
+        
+        sql = "INSERT INTO users (name,email,password,image) VALUES (%s, %s, %s,%s)"
         val = jsonToTuple(form)
+        print(val)
         mycursor.execute(sql,val)
         mydb.commit()
         return redirect(url_for("login"))
@@ -160,13 +173,15 @@ def login():
     if(request.method == 'POST'): 
         email = request.form['email'] 
         password = request.form['password'] 
-        mycursor.execute('SELECT id, email, name, password FROM users WHERE email = %s', (email,)) 
+        mycursor.execute('SELECT id, email, name, password, image FROM users WHERE email = %s', (email,)) 
         account = mycursor.fetchone()
+        
         if account and hash.verify(password , account[3]): 
             session['loggedin'] = True
             session['id'] = account[0] 
             session['email'] = account[1]
             session['name'] = account[2]
+            session['image'] = account[4]
             msg = 'Logged in successfully !'
             return redirect(url_for('home')) 
         else: 
@@ -199,7 +214,7 @@ def writing_tips():
 
 @app.route('/Aboutus')
 def about_us():
-    return render_template('About-Us.html', pagename = 'About us')
+    return render_template('About-Us.html', pagename = 'About us', currentUser = getCurrentUser())
 
 ## End about-us
 

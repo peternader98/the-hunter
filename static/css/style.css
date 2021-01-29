@@ -249,6 +249,7 @@ img {
   text-transform: uppercase; 
   border-radius: 20px;
   padding: 7px 10px;
+  
 }
 .myprimary_btn:hover {
   background-position: right center;
@@ -292,14 +293,23 @@ img {
     margin-top: 0px;
     margin-bottom:0px
   }
+  
   .profileLink img{
-      width: 100%;
-      height: 100%;
+      width: 135px;
+      height: 140px;
       margin: auto;
       margin-top: 5px;
-
-
+      border-radius: 500px;
+   
   }
+  /*
+  .profileLink:hover img   {
+  
+    border:1.8px solid  wheat;
+
+}
+*/
+  
 
 .overlay, .single-gallery .content {
   position: absolute;
@@ -3926,7 +3936,22 @@ h6 {
       text-align: center; }
       .single-footer-widget .social_widget a:hover {
         background: #3fcaff; }
+        #mymenu{
+          width: 20px; height: 25px;
+        }
+        #mydrop{
+          margin-top: 15px;
+        }
+        @media(max-width:984px){
+          #mymenu{
+            width: 25px; height: 25px;
+            
+          } 
 
+          #mydrop{
+            margin-top: 30px;
+          }
+        }
 /* End Footer Area css
 ============================================================================================ */
 /*---------------------------------------------------- */
