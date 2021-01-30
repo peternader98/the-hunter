@@ -1,4 +1,4 @@
-from flask import Flask,render_template, request, flash, redirect, session, url_for
+from flask import Flask,render_template, request, flash, redirect, session, url_for, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
 from  passlib.hash import  pbkdf2_sha1 as hash
@@ -102,9 +102,10 @@ def home():
 def upload_file():
     if not isUserLogedin():
         return redirect(url_for("login"))
-    if(request.method == 'GET'):
-        return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
-    else:
+
+    if(request.method == 'POST'):
+        allowedFiles = []
+        notAllowedFiles = []
         # check if the post request has the file part
         if 'files[]' not in request.files:
             #flash('No file part')
@@ -121,13 +122,20 @@ def upload_file():
         
         for file in files:
             if file and allowed_file(file.filename):
+                allowedFiles.append(file.filename)
                 filename = changeFileName(secure_filename(file.filename))
                 file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/usersFiles/", filename))
+            else:
+                notAllowedFiles.append(file.filename)
+        
 
-        #return "file apploded"
-        #return redirect(url_for('uploaded_file', filename=filename))
+        if(len(notAllowedFiles) != 0):
+            return jsonify(status = False, msg = "Your Files are apploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles) 
+        else:   
+             return jsonify(status = True, msg = "Your Files are apploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles) 
+        
 
-    return redirect(url_for('upload_file'))
+    return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
 
 ## End  upload files
 
