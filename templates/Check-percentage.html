@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+
 {% block links %}
 	<link rel="stylesheet" href="../static/css/alert-message.css">
 {% endblock %}
+
 {% block scripts %}
 <script src="../static/js/alert-message.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
@@ -15,7 +17,7 @@
 		
 		function shortStr(str){
 			if(str.length > 12){
-				return str.replace(str.substr(6, str.indexOf(".")-6) , " [..]")
+				return str.replace(str.substr(6, str.indexOf(".")-6), " [..]")
 			}
 		}
        
@@ -27,86 +29,93 @@
             $('#errmsg').empty();
             $('#success').hide();
             $('#success-text').empty();
-
 			*/
-			
 			
             var formdata = new FormData($('#file')[0]);
 			if($("#input").val().trim() != ""){
-
 			
-            $.ajax({
-                type:"POST",
-                uri:"{{url_for('upload_file')}}",
-                encrypt: 'multipart/form-data',
-                data: formdata,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success:function(data) {
-					console.log(data)
-                    if (data.status == true) {
-						$("#file").trigger("reset");
-						
-						showMessage(data.status, data.msg)
+				$.ajax({
+					type:"POST",
+					uri:"{{url_for('upload_file')}}",
+					encrypt: 'multipart/form-data',
+					data: formdata,
+					processData: false,
+					contentType: false,
+					cache: false,
+					success:function(data) {
+						console.log(data)
+						if (data.status == true) {
+							$("#file").trigger("reset");
+							showMessage(data.status, data.msg)
+						}
+						if (data.status == false) {
+							let strError = ""
+							let strSuccess =  ""
 
-                    }
-                    if (data.status == false) {
-
-						let strError = " "
-						let strSuccess =  " "
-						
-						if(data.notAllowedFiles.length != 0 ){
-							for(let errorFile of data.notAllowedFiles){
-								strError = strError + shortStr(errorFile) + ", "
-								
+							if(data.notAllowedFiles.length != 0){
+								for(let errorFile of data.notAllowedFiles){
+									strError = strError + shortStr(errorFile) + ", "	
+								}
+								console.log("error files")
+								console.log(strError)
 							}
 
-							console.log("error files")
-							console.log(strError)
-						}
-
-						if(data.allowedFiles.length != 0 ){
-							for(let successFile of data.notAllowedFiles){
-								strSuccess = strSuccess +  shortStr(successFile) + ", "
-								
+							if(data.allowedFiles.length != 0){
+								for(let successFile of data.notAllowedFiles){
+									strSuccess = strSuccess +  shortStr(successFile) + ", "
+								}
+								console.log("success files")
+								console.log(strSuccess)
 							}
-
-							console.log("success files")
-							console.log(strSuccess)
+							
+							if(strSuccess != '')
+								showMessage(false, "files "+ strSuccess +" are uploaded and those files " + strError + " should be doc, docx or pdf")
+							else
+								showMessage(false, String(strError) + " should be doc, docx or pdf")
+							
+							$("#file").trigger("reset");
 						}
-						
-						showMessage(false, "files"+ strSuccess +" is apploaded and those files"+ strError + "should be doc, docx  or pdf "   )
-						$("#file").trigger("reset");
-                    }
-                },
-                error:function (reject){
-
-					var response = $.parseJSON(reject.responseText);
-					console.log(reject)
-					showMessage(false, "oh no, there is something whent wrong!!")
-                }
-
-			})
-		}else{
-			showMessage(false, "You need to upload at least 1 file.")
-		}
-
+					},
+					error:function (reject){
+						var response = $.parseJSON(reject.responseText);
+						console.log(reject)
+						showMessage(false, "oh no, there is something whent wrong!!")
+					}
+				})
+			}
+			else{
+				showMessage(false, "You need to upload at least 1 file.")
+			}
         })
     </script>
 
-	
 {% endblock %}
+
 {% block body %}
 
-	{% include 'banner.html' %}
 	{% include 'includes/alerts/messages.html' %}
-	<div style="align-content: center;">
-		<form id="file">
-			<input id="input" type="file" name="files[]" multiple="true" autocomplete="off" required>
-			
-		</form >
-		<button id="upload"> Plesae click me sempiy</button>
-		
-	</div>
+
+	{% include 'includes/banner.html' %}
+
+	<div class="container">
+		<div class="content">
+			<div class="box text-center">
+				<form id="file">
+					<input type="file" id="input" name="files[]" multiple="true" autocomplete="off" style="margin:auto; width:0px" class="inputfile inputfile-5" data-multiple-caption="{count} files selected" multiple style="opacity: 0;" required/>
+					<label for="input">
+						<figure>
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+								<path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
+							</svg>
+						</figure>
+						<span></span>
+					</label>
+				</form>
+				<button id="upload">Upload</button>
+			</div>
+		</div><!-- Related demos -->
+	</div><!-- /container -->
+
+	<script src="../static/js/custom-file-input.js"></script>
+	<script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
 {% endblock %}

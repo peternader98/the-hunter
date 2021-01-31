@@ -13,15 +13,9 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
             <ul class="nav navbar-nav menu_nav justify-content-center">
-                <li class="nav-item "><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item submenu dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                        aria-haspopup="true" aria-expanded="false">Plagiarism Checker</a>
-                    <ul class="dropdown-menu">
-                        <li class="nav-item"><a class="nav-link" href="{{url_for('upload_file')}}">Check percentage</a>
-                        <li class="nav-item"><a class="nav-link" href="{{url_for('upload_file')}}">Check the type</a>
-                        <li class="nav-item"><a class="nav-link" href="{{url_for('upload_file')}}">Check the level</a>
-                    </ul>
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('upload_file')}}">Checking plagiarism</a>
                 </li>
                 <li class="nav-item submenu dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
@@ -31,7 +25,9 @@
                         <li class="nav-item"><a class="nav-link" href="Check-vocabulary.html">Check vocabulary</a>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="{{url_for('about_us')}}">About US</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{url_for('about_us')}}">About US</a>
+                </li>
             </ul>
             {% if not currentUser %}
             <ul class="nav navbar-nav navbar-right">
@@ -54,13 +50,15 @@
                                                                     transform: translate(-40%, -50%); color: #222222;"
                             class="far fa-user"></i></a>
                     <ul class="dropdown-menu" id="mydrop" style="left: -700%;">
-                        <li class="nav-item"><a class="nav-link profileLink" href="Check-grammar.html"> 
-                            <div style="width: 100%; text-align: center;">
-                                <img class="rounded-circle" src="../static/uploads/users/{{currentUser['image']}}" alt="">
-                            </div>
+                        <li class="nav-item">
+                            <a class="nav-link profileLink" href="#"> 
+                                <div style="width: 100%; text-align: center;">
+                                    <img class="rounded-circle" src="../static/uploads/users/{{currentUser['image']}}" alt="">
+                                </div>
                             {{currentUser["name"]}}
-                        </a>
-                        <li class="nav-item"><a class="nav-link" href="Check-vocabulary.html"><i class="fas fa-cog"></i> Settings</a>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog"></i> Settings</a>
                     </ul>
                 </li>
 

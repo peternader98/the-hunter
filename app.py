@@ -4,7 +4,6 @@ from werkzeug.datastructures import  FileStorage
 from  passlib.hash import  pbkdf2_sha1 as hash
 import mysql.connector
 
-
 import os
 import string
 import random
@@ -28,16 +27,7 @@ mydb = mysql.connector.connect(
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mycursor = mydb.cursor()
 
-
-
-
-#mycursor.execute("select * from users")
-#result = mycursor.fetchone()
-
-#print(result)
-
-
-## functions
+## Start functions
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -53,19 +43,15 @@ def jsonToTuple(data):
     print(data)
     for  v in data:
         mydata.append(data[v])
-    
     return tuple(mydata)   
 
 def isUserLogedin():
     logedin = session.get('loggedin')
-   
     if  logedin == None or logedin == False :
         return False
     return True  
 
-
 def getCurrentUser():
-    
     if not isUserLogedin():
         return None
     dec = {}
@@ -74,38 +60,27 @@ def getCurrentUser():
     dec["name"] = session['name']
     dec["image"] = session['image']
     return dec
-## end of functions
+
+## End functions
 
 ## Start home
 
-# @app.before_request
-# def func():
-#      print("Func you")
-
-# @app.after_request
-# def funcfunc(response):
-#      print(response)
-#      return response
-
 @app.route("/")
 def home():
-    
-    
-    
     return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser())
 
 ## End home
 
-## Start  upload files
+## Start upload files
 
 @app.route('/checkPlagiarism', methods = ['GET', 'POST'])
 def upload_file():
     if not isUserLogedin():
         return redirect(url_for("login"))
-
     if(request.method == 'POST'):
         allowedFiles = []
         notAllowedFiles = []
+
         # check if the post request has the file part
         if 'files[]' not in request.files:
             #flash('No file part')
@@ -127,13 +102,11 @@ def upload_file():
                 file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/usersFiles/", filename))
             else:
                 notAllowedFiles.append(file.filename)
-        
 
         if(len(notAllowedFiles) != 0):
-            return jsonify(status = False, msg = "Your Files are apploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles) 
+            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles)
         else:   
-             return jsonify(status = True, msg = "Your Files are apploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles) 
-        
+            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles)
 
     return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
 
@@ -145,23 +118,21 @@ def upload_file():
 def register_user():
     if isUserLogedin():
         return redirect(url_for("home"))
-
-   
     if(request.method == "GET"):
         return render_template("registration.html" , pagename = "registration")
     else:
-        filename = "placeholder.png"
+        mycursor.execute('SELECT email FROM users WHERE email = %s', (request.form['email'],)) 
+        if mycursor.fetchone():
+            return render_template("registration.html" , pagename = "registration", msg = 'Email is already used')
 
+        filename = "placeholder.png"
         file = request.files['file']
         if file.filename != "":
             filename = changeFileName(secure_filename(file.filename))
             file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/users/",  filename))
-       
         form = request.form.to_dict()
         form["image"] = filename
         form["password"] = hash.encrypt(request.form.get("password"))
-        
-        
         sql = "INSERT INTO users (name,email,password,image) VALUES (%s, %s, %s,%s)"
         val = jsonToTuple(form)
         print(val)
@@ -183,7 +154,6 @@ def login():
         password = request.form['password'] 
         mycursor.execute('SELECT id, email, name, password, image FROM users WHERE email = %s', (email,)) 
         account = mycursor.fetchone()
-        
         if account and hash.verify(password , account[3]): 
             session['loggedin'] = True
             session['id'] = account[0] 
@@ -193,7 +163,7 @@ def login():
             msg = 'Logged in successfully !'
             return redirect(url_for('home')) 
         else: 
-            msg = 'Incorrect email / password !'
+            msg = 'Incorrect email or password'
     return render_template('sign-in.html', pagename = 'Login', msg = msg)
 
 ## End log-in
