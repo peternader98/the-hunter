@@ -5,10 +5,12 @@ from  passlib.hash import  pbkdf2_sha1 as hash
 import mysql.connector
 
 import os
+
 import string
 import random
+import utilities.plgarismcheker as checker
 
-UPLOAD_FOLDER = 'static/uploads'
+UPLOAD_FOLDER = 'static/uploads/usersFiles/'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx'}
 
 app = Flask(__name__)
@@ -28,6 +30,10 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 mycursor = mydb.cursor()
 
 ## Start functions
+
+
+
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -75,9 +81,13 @@ def home():
 
 @app.route('/checkPlagiarism', methods = ['GET', 'POST'])
 def upload_file():
-    if not isUserLogedin():
-        return redirect(url_for("login"))
+   
+  
+    # if not isUserLogedin():
+    #    return redirect(url_for("login"))
+    
     if(request.method == 'POST'):
+        uploadedFiles = []
         allowedFiles = []
         notAllowedFiles = []
 
@@ -99,9 +109,13 @@ def upload_file():
             if file and allowed_file(file.filename):
                 allowedFiles.append(file.filename)
                 filename = changeFileName(secure_filename(file.filename))
-                file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/usersFiles/", filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             else:
                 notAllowedFiles.append(file.filename)
+        if(len(uploadedFiles) !=0):
+            for data in checker.check_plagiarism(uploadedFiles):
+                print(data)
 
         if(len(notAllowedFiles) != 0):
             return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles)
@@ -129,7 +143,7 @@ def register_user():
         file = request.files['file']
         if file.filename != "":
             filename = changeFileName(secure_filename(file.filename))
-            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/users/",  filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/usersImages/",  filename))
         form = request.form.to_dict()
         form["image"] = filename
         form["password"] = hash.encrypt(request.form.get("password"))
@@ -189,6 +203,8 @@ def writing_tips():
 ## End Writing-Tips
 
 ## Start about-us
+
+
 
 @app.route('/Aboutus')
 def about_us():
