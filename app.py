@@ -1,17 +1,16 @@
-from flask import Flask,render_template, request, flash, redirect, session, url_for, jsonify
+from flask import Flask, render_template, request, flash, redirect, session, url_for, jsonify
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
 from  passlib.hash import  pbkdf2_sha1 as hash
 import mysql.connector
-
 import os
-
 import string
 import random
-import utilities.plgarismcheker as checker
+
+import utilities.plagiarismcheker as checker
 
 UPLOAD_FOLDER = 'static/uploads/usersFiles/'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx', 'cpp'}
 
 app = Flask(__name__)
 
@@ -31,17 +30,13 @@ mycursor = mydb.cursor()
 
 ## Start functions
 
-
-
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def changeFileName(fileName):
     letters = string.ascii_letters
-    newStr = ''.join(random.choice(letters) for i in range(10))+"-"+fileName
+    newStr = ''.join(random.choice(letters) for i in range(10)) + "-" + fileName
     return newStr
 
 def jsonToTuple(data):
@@ -81,46 +76,37 @@ def home():
 
 @app.route('/checkPlagiarism', methods = ['GET', 'POST'])
 def upload_file():
-   
-  
-    # if not isUserLogedin():
-    #    return redirect(url_for("login"))
-    
+    if not isUserLogedin():
+        return redirect(url_for("login"))
     if(request.method == 'POST'):
         uploadedFiles = []
+        plag_results = []
         allowedFiles = []
         notAllowedFiles = []
 
         # check if the post request has the file part
         if 'files[]' not in request.files:
-            #flash('No file part')
-            #return redirect(request.url)
             return "error"
 
         files = request.files.getlist('files[]')
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        # if file.filename == '':
-        #     #flash('No selected file')
-        #     #return redirect(request.url)
-        #     return "no file uploaded"
         
         for file in files:
             if file and allowed_file(file.filename):
                 allowedFiles.append(file.filename)
-                filename = changeFileName(secure_filename(file.filename))
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             else:
                 notAllowedFiles.append(file.filename)
-        if(len(uploadedFiles) !=0):
+
+        if(len(uploadedFiles) != 0):
             for data in checker.check_plagiarism(uploadedFiles):
                 print(data)
+                plag_results.append(data)
 
         if(len(notAllowedFiles) != 0):
-            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles)
+            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results)
         else:   
-            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles)
+            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results)
 
     return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
 
@@ -137,13 +123,16 @@ def register_user():
     else:
         mycursor.execute('SELECT email FROM users WHERE email = %s', (request.form['email'],)) 
         if mycursor.fetchone():
-            return render_template("registration.html" , pagename = "registration", msg = 'Email is already used')
+            return render_template("registration.html" , pagename = "registration", msg_email = 'Email is already used')
+        
+        if len(request.form.get("password")) < 8:
+            return render_template("registration.html" , pagename = "registration", msg_pass = 'Password less than 8 characters')
 
         filename = "placeholder.png"
         file = request.files['file']
         if file.filename != "":
             filename = changeFileName(secure_filename(file.filename))
-            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/usersImages/",  filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"../users/",  filename))
         form = request.form.to_dict()
         form["image"] = filename
         form["password"] = hash.encrypt(request.form.get("password"))
@@ -197,20 +186,26 @@ def logout():
 ## Start Writing-Tips
 
 @app.route('/Writing-Tips')
-def writing_tips():
-    return render_template('Writing-Tips.html', pagename = 'Writing Tips')
+def table():
+    return render_template('includes/table.html', pagename = 'Writing Tips', currentUser = getCurrentUser())
 
 ## End Writing-Tips
 
 ## Start about-us
-
-
 
 @app.route('/Aboutus')
 def about_us():
     return render_template('About-Us.html', pagename = 'About us', currentUser = getCurrentUser())
 
 ## End about-us
+
+## Start profile
+
+@app.route('/Profile')
+def profile():
+    return render_template('profile.html', pagename = 'Profile', currentUser = getCurrentUser())
+
+## End profile
 
 if __name__ == '__main__':
     app.run(debug = True)
