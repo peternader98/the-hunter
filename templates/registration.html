@@ -31,15 +31,18 @@
                 <div class="card-heading">
                     <h2 class="title">Create your account on</h2>
                     <center>
-                        <font size="+3" face=impact color="red">Investigator</font>
+                        <font size="+3" face=impact color="red">The Hunter</font>
                     </center>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{url_for('register_user')}}" enctype = "multipart/form-data">
                         <div class="form-row m-b-55">
-                            <div>
+                            <div class="name">
                                 <input type="file" name="file" id="">
                             </div>
+                            <!-- <div class="value">
+                                <input type="image" name="image" id="image">
+                            </div> -->
                         </div>
                         <div class="form-row m-b-55">
                             <div class="name">Name</div>
@@ -69,7 +72,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="msg" style="color: red;font-size: 30px;font-weight: bold;">
+                        <div class="msg" style="color: red;font-size: 15px;font-weight: bold;">
                             {{ msg }}
                             <br>
                             <br>
