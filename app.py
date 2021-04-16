@@ -123,10 +123,10 @@ def register_user():
     else:
         mycursor.execute('SELECT email FROM users WHERE email = %s', (request.form['email'],)) 
         if mycursor.fetchone():
-            return render_template("registration.html" , pagename = "registration", msg_email = 'Email is already used')
+            return render_template("registration.html" , pagename = "registration", msg = 'Email is already used')
         
         if len(request.form.get("password")) < 8:
-            return render_template("registration.html" , pagename = "registration", msg_pass = 'Password less than 8 characters')
+            return render_template("registration.html" , pagename = "registration", msg = 'Password less than 8 characters')
 
         filename = "placeholder.png"
         file = request.files['file']
@@ -159,7 +159,7 @@ def login():
         account = mycursor.fetchone()
         if account and hash.verify(password , account[3]): 
             session['loggedin'] = True
-            session['id'] = account[0] 
+            session['id'] = account[0]
             session['email'] = account[1]
             session['name'] = account[2]
             session['image'] = account[4]
