@@ -4,8 +4,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from werkzeug.utils import secure_filename
 
 def changeFileName(fileName):
-    newStr = ''.join(fileName[26:])
-    return newStr
+    return ''.join(fileName[26:])
 
 def check_plagiarism(files):
     student_notes = [open(File).read() for File in  files ]

@@ -6,6 +6,7 @@ import mysql.connector
 import os
 import string
 import random
+import datetime
 
 import utilities.plagiarismcheker as checker
 
@@ -39,10 +40,19 @@ def changeFileName(fileName):
     newStr = ''.join(random.choice(letters) for i in range(10)) + "-" + fileName
     return newStr
 
+def getID(filename):
+    return ''.join(filename[0:9])
+
+def getName(filename):
+    return ''.join(filename[10:])
+
+def getPercent(result):
+    return ''.join(result[0:5]) + '%'
+
 def jsonToTuple(data):
     mydata = []
     print(data)
-    for  v in data:
+    for v in data:
         mydata.append(data[v])
     return tuple(mydata)   
 
@@ -61,6 +71,15 @@ def getCurrentUser():
     dec["name"] = session['name']
     dec["image"] = session['image']
     return dec
+
+def getResults():
+    results = []
+    mycursor.execute('SELECT date, student_id_1, student_name_1, student_id_2, student_name_2, percentage FROM results WHERE trans_id = %s', (session['id'],))
+    res = mycursor.fetchall()
+    if res:
+        for data in res:
+            results.append(data)
+    return results
 
 ## End functions
 
@@ -103,6 +122,20 @@ def upload_file():
                 print(data)
                 plag_results.append(data)
 
+                result = []
+                result.append(session['id'])
+                result.append(datetime.datetime.now())
+                result.append(int(getID(data[0])))
+                result.append(getName(data[0]))
+                result.append(int(getID(data[1])))
+                result.append(getName(data[1]))
+                result.append(getPercent(str(data[2])))
+                sql = "INSERT INTO results (trans_id,date,student_id_1,student_name_1,student_id_2,student_name_2,percentage) VALUES (%s, %s, %s, %s, %s, %s,%s)"
+                val = tuple(result)
+                print(val)
+                mycursor.execute(sql,val)
+                mydb.commit()
+
         if(len(notAllowedFiles) != 0):
             return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results)
         else:   
@@ -121,6 +154,9 @@ def register_user():
     if(request.method == "GET"):
         return render_template("registration.html" , pagename = "registration")
     else:
+        if len(request.form.get("name")) == 0:
+            return render_template("registration.html" , pagename = "registration", msg = 'No name is entered!')
+
         mycursor.execute('SELECT email FROM users WHERE email = %s', (request.form['email'],)) 
         if mycursor.fetchone():
             return render_template("registration.html" , pagename = "registration", msg = 'Email is already used')
@@ -187,7 +223,7 @@ def logout():
 
 @app.route('/Writing-Tips')
 def table():
-    return render_template('includes/table.html', pagename = 'Writing Tips', currentUser = getCurrentUser())
+    return render_template('', pagename = 'Writing Tips', currentUser = getCurrentUser())
 
 ## End Writing-Tips
 
@@ -201,9 +237,12 @@ def about_us():
 
 ## Start profile
 
-@app.route('/Profile')
+@app.route('/Profile', methods=['GET', 'POST'])
 def profile():
-    return render_template('profile.html', pagename = 'Profile', currentUser = getCurrentUser())
+    #res_length = len(getResults())
+    ID = set(id[1] for id in getResults())
+
+    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser(), results = getResults(), id = ID)
 
 ## End profile
 

@@ -1,1 +1,27 @@
-<!-- This templates was made by Colorlib (https://colorlib.com) -->
+if(request.method == 'POST'):
+        results = []
+        mycursor.execute('SELECT date, student_id_1, student_name_1, student_id_2, student_name_2, percentage FROM results WHERE trans_id = %s', (session['id'],))
+        res = mycursor.fetchall()
+        if res:
+            for data in res:
+                results.append(data)
+        print(results)
+
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            return "error"
+
+        filename = "placeholder.png"
+        file = request.files['file']
+        if file.filename != "":
+            filename = changeFileName(secure_filename(file.filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"../users/",  filename))
+        form = request.form.to_dict()
+        form["image"] = filename
+        mycursor.execute("INSERT INTO users (image) VALUES (%s)", form["image"])
+        mydb.commit()
+
+        if(len(results) != 0):   
+                return jsonify(status = True, result = results)
+
+    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser())

@@ -34,14 +34,6 @@
 	}
 
 	$(document).on('click', '#upload', function (e) {
-		/*
-		tinyMCE.triggerSave();
-		e.preventDefault();
-		$('#errors').hide();
-		$('#errmsg').empty();
-		$('#success').hide();
-		$('#success-text').empty();
-		*/
 
 		var formdata = new FormData($('#file')[0]);
 
@@ -60,10 +52,10 @@
 					if (data.status == true) {
 						$("#file").trigger("reset");
 						showMessage(data.status, data.msg)
+
 						var results = data.Results;
 						var dt = new Date();
 						var resultID = document.querySelector('#result');
-						//var result_array = Array.prototype.slice.call(resultID);
 						console.log(resultID)
 						results.forEach((result) => {
 							var trow = document.createElement('tr')
@@ -131,6 +123,7 @@
 			showMessage(false, "You need to upload at least 1 file.")
 		}
 	})
+
 </script>
 
 {% endblock %}
@@ -160,7 +153,6 @@
 			</form>
 			<button id="upload" style="border-radius: 20px;padding: 14px 40px;background-color: #f44336; color: white;">Check</button>
 		</div>
-		<!--div id='results'></div-->
 
 		<!-- Start Table Area -->
 		<div class="limiter">

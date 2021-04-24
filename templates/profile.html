@@ -1,10 +1,78 @@
 {% extends 'base.html' %}
+{% block links %}
+
+<link rel="stylesheet" href="../static/css/font-awesome.min.css">
+<meta content="" name="description">
+<meta content="" name="keywords">
+
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+  rel="stylesheet">
+
+<!-- Vendor CSS Files -->
+<link href="../static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="../static/assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+<link href="../static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+<link href="../static/assets/vendor/venobox/venobox.css" rel="stylesheet">
+<link href="../static/assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+<link href="../static/assets/vendor/aos/aos.css" rel="stylesheet">
+
+<!-- Template Main CSS File -->
+<link href="../static/assets/css/style.css" rel="stylesheet">
+
+{% endblock %}
+
 {% block body %}
+
+<!-- ======= Header ======= -->
+<header id="header">
+  <div class="d-flex flex-column">
+    <div class="profile">
+      <a class="navbar-brand logo_h ml-3" href="index.html">
+        <font size="+5" face=impact color="red">The hunter</font>
+      </a>
+      <div class="container emp-profile">
+        <form method="post">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="profile-img">
+                <img src="img/user-alt-512.png" class="img-fluid rounded-circle" />
+                <div class="file btn btn-lg btn-primary">
+                  Change Photo
+                  <input type="file" name="file" />
+                </div>
+              </div>
+            </div>
+            <h1 class="text-light"><a href="{{url_for('profile')}}">{{currentUser.name}}</a></h1> <br>
+            <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile" />
+          </div>
+          <div class="social-links mt-3 text-center">
+            <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+            <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+            <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+            <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+            <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+          </div>
+        </form>
+        <nav class="nav-menu">
+          <ul>
+            <li class="active"><a href="index.html"><i class="bx bx-home"></i> <span>Home</span></a></li>
+            <li><a href="#about"><i class="bx bx-user"></i> <span>About</span></a></li>
+            <li><a href="#contact"><i class="bx bx-envelope"></i> Contact</a></li>
+          </ul>
+        </nav><!-- .nav-menu -->
+        <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- End Header -->
 
 <!-- ======= Hero Section ======= -->
 <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
   <div class="hero-container" data-aos="fade-in">
-    <h1>User Name</h1>
+    <h1>{{currentUser.name}}</h1>
     <p>I'm <span class="typed" data-typed-items="Designer, Developer, Freelancer, Photographer"></span></p>
   </div>
 </section>
@@ -97,19 +165,22 @@
           <div class="progress">
             <span class="skill">HTML <i class="val">100%</i></span>
             <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+              </div>
             </div>
           </div>
           <div class="progress">
             <span class="skill">CSS <i class="val">90%</i></span>
             <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
+              </div>
             </div>
           </div>
           <div class="progress">
             <span class="skill">JavaScript <i class="val">75%</i></span>
             <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+              </div>
             </div>
           </div>
         </div>
@@ -117,19 +188,22 @@
           <div class="progress">
             <span class="skill">PHP <i class="val">80%</i></span>
             <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
+              </div>
             </div>
           </div>
           <div class="progress">
             <span class="skill">WordPress/CMS <i class="val">90%</i></span>
             <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
+              </div>
             </div>
           </div>
           <div class="progress">
             <span class="skill">Photoshop <i class="val">55%</i></span>
             <div class="progress-bar-wrap">
-              <div class="progress-bar" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+              <div class="progress-bar" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100">
+              </div>
             </div>
           </div>
         </div>
@@ -163,7 +237,9 @@
               <h4>Call:</h4>
               <p>+2 011589 55488 55</p>
             </div>
-            <iframe src="https://www.google.com/maps/place/Masr+Al+Jadidah,+Al+Matar,+El+Nozha,+Cairo+Governorate/@30.1123328,31.3350959,15z/data=!3m1!4b1!4m5!3m4!1s0x145815dcc3e4e599:0x6c67c22e4aa39206!8m2!3d30.112315!4d31.3438507" frameborder="0" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe>
+            <iframe
+              src="https://www.google.com/maps/place/Masr+Al+Jadidah,+Al+Matar,+El+Nozha,+Cairo+Governorate/@30.1123328,31.3350959,15z/data=!3m1!4b1!4m5!3m4!1s0x145815dcc3e4e599:0x6c67c22e4aa39206!8m2!3d30.112315!4d31.3438507"
+              frameborder="0" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe>
           </div>
         </div>
         <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
@@ -171,23 +247,27 @@
             <div class="row">
               <div class="form-group col-md-6">
                 <label for="name">Your Name</label>
-                <input type="text" name="name" class="form-control" id="name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                <input type="text" name="name" class="form-control" id="name" data-rule="minlen:4"
+                  data-msg="Please enter at least 4 chars" />
                 <div class="validate"></div>
               </div>
               <div class="form-group col-md-6">
                 <label for="name">Your Email</label>
-                <input type="email" class="form-control" name="email" id="email" data-rule="email" data-msg="Please enter a valid email" />
+                <input type="email" class="form-control" name="email" id="email" data-rule="email"
+                  data-msg="Please enter a valid email" />
                 <div class="validate"></div>
               </div>
             </div>
             <div class="form-group">
               <label for="name">Subject</label>
-              <input type="text" class="form-control" name="subject" id="subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
+              <input type="text" class="form-control" name="subject" id="subject" data-rule="minlen:4"
+                data-msg="Please enter at least 8 chars of subject" />
               <div class="validate"></div>
             </div>
             <div class="form-group">
               <label for="name">Message</label>
-              <textarea class="form-control" name="message" rows="10" data-rule="required" data-msg="Please write something for us"></textarea>
+              <textarea class="form-control" name="message" rows="10" data-rule="required"
+                data-msg="Please write something for us"></textarea>
               <div class="validate"></div>
             </div>
             <div class="mb-3">
@@ -205,5 +285,21 @@
 
 </main>
 <!-- End #main -->
+
+<!-- Vendor JS Files -->
+<script src="../static/assets/vendor/jquery/jquery.min.js"></script>
+<script src="../static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../static/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
+<script src="../static/assets/vendor/php-email-form/validate.js"></script>
+<script src="../static/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
+<script src="../static/assets/vendor/counterup/counterup.min.js"></script>
+<script src="../static/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="../static/assets/vendor/venobox/venobox.min.js"></script>
+<script src="../static/assets/vendor/owl.carousel/owl.carousel.min.js"></script>
+<script src="../static/assets/vendor/typed.js/typed.min.js"></script>
+<script src="../static/assets/vendor/aos/aos.js"></script>
+
+<!-- Template Main JS File -->
+<script src="../static/assets/js/main.js"></script>
 
 {% endblock %}
