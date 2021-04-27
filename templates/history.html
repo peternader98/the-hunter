@@ -29,22 +29,22 @@
 						<thead>
 							<tr class="table100-head">
 								<th class="column1">Date</th>
-								<th class="column2">1st ID</th>
-								<th class="column3">1st Name</th>
-								<th class="column4">2nd ID</th>
-								<th class="column5">2nd Name</th>
-								<th class="column6">percentage</th>
+								<th class="column1">1st ID</th>
+								<th class="column1">1st Name</th>
+								<th class="column1">2nd ID</th>
+								<th class="column1">2nd Name</th>
+								<th class="column1">percentage</th>
 							</tr>
 						</thead>
 						<tbody>
 							{% for result in results %}
 							<tr>
 								<td class="column1">{{result[0]}}</td>
-								<td class="column2">{{result[1]}}</td>
-								<td class="column3">{{result[2]}}</td>
-								<td class="column4">{{result[3]}}</td>
-								<td class="column5">{{result[4]}}</td>
-								<td class="column6">{{result[5]}}</td>
+								<td class="column1">{{result[1]}}</td>
+								<td class="column1">{{result[2]}}</td>
+								<td class="column1">{{result[3]}}</td>
+								<td class="column1">{{result[4]}}</td>
+								<td class="column1">{{result[5]}}</td>
 							</tr>
 							{% endfor %}
 						</tbody>
@@ -55,29 +55,52 @@
 	</div>
 	<!-- End Table Area -->
 
-	<table>
-		<thead>
-			<tr class="table100-head">
-				<th style="color: black;background-color: white;">student ID</th>
-				{% for cell in id %}
-				<th>{{cell}}</th>
-				{% endfor %}
-			</tr>
-		</thead>
-		<tbody>
-			{% for row in result %}
-			<tr>
-				{% if row.length == id.length %}
-				<th class="table100-head">{{id[row]}}</th>
-				{% endif %}
-				
-				{% for cell in row %}
-				<td>{{ cell }}</td>
-				{% endfor %}
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+	<div class="limiter">
+		<div style="margin-top: 25px;margin-bottom: 25px;margin-left: 150px;">
+			<div class="wrap-table100">
+				<div class="table100">
+					<table>
+						<thead>
+							<tr class="table100-head">
+								<th>student ID</th>
+								{% for id in ids %}
+								<th>{{id}}</th>
+								{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+							{% for id1 in ids %}
+							<tr class="table100-head">
+								<th style="background: #36304a;">{{id1}}</th>
+								{% for id2 in ids %}
+									{% if id1 == id2 %}
+									<td>100%</td>
+									{% else %}
+										<!-- {% for result in results %}
+											{% if (result[1] == id1 or result[3] == id1) and (result[1] == id2 or result[3] == id2) %}
+											<td>{{ result[5] }}</td>
+											{% endif %}
+										{% endfor %} -->
+										<td>hunt</td>
+									{% endif %}
+								{% endfor %}
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					<!-- {% for row in table %}
+						<tr>
+						{% for cell in row %}
+							{% if forloop.first or forloop.parentloop.first %} <th> {% else %} <td> {% endif %}
+								{{ cell }}
+							{% if forloop.first or forloop.parentloop.first %} </th> {% else %} </td> {% endif %}
+						{% endfor %}
+						</tr>
+					{% endfor %} -->
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!--table scripts-->
 	<script src="../static/js/main.js"></script>	

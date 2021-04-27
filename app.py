@@ -239,10 +239,17 @@ def about_us():
 
 @app.route('/Profile', methods=['GET', 'POST'])
 def profile():
-    #res_length = len(getResults())
-    ID = set(id[1] for id in getResults())
+    ID = set()
+    percent = set()
+    for id in getResults():
+        if id[1] == id[3]:
+            ID.add(id[1])
+        else:
+            ID.add(id[1])
+            ID.add(id[3])
 
-    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser(), results = getResults(), id = ID)
+
+    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser(), results = getResults(), ids = ID)
 
 ## End profile
 
