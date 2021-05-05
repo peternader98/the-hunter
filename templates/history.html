@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block links %}
-<link rel="stylesheet" href="../static/css/alert-message.css">
-
-<!--table css-->
+<!-- table css-->
 <link rel="stylesheet" type="text/css" href="../static/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="../static/vendor/animate/animate.css">
@@ -14,6 +12,7 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="../static/css/util.css">
 	<link rel="stylesheet" type="text/css" href="../static/css/main2.css">
+<!-- end table css-->
 {% endblock %}
 
 {% block body %}
@@ -73,30 +72,20 @@
 							<tr class="table100-head">
 								<th style="background: #36304a;">{{id1}}</th>
 								{% for id2 in ids %}
-									{% if id1 == id2 %}
-									<td>100%</td>
-									{% else %}
-										<!-- {% for result in results %}
-											{% if (result[1] == id1 or result[3] == id1) and (result[1] == id2 or result[3] == id2) %}
-											<td>{{ result[5] }}</td>
-											{% endif %}
-										{% endfor %} -->
+									{% for percent in percents %}
+										{% if id1 == id2 %}
+										<td>100%</td>
+										{% elif (percent[0] == id1 or percent[1] == id1) and (percent[0] == id2 or percent[1] == id2) %}
+										<td>{{ percent[2] }}</td>
+										{% else %}
 										<td>hunt</td>
-									{% endif %}
+										{% endif %}
+									{% endfor %}
 								{% endfor %}
 							</tr>
 							{% endfor %}
 						</tbody>
 					</table>
-					<!-- {% for row in table %}
-						<tr>
-						{% for cell in row %}
-							{% if forloop.first or forloop.parentloop.first %} <th> {% else %} <td> {% endif %}
-								{{ cell }}
-							{% if forloop.first or forloop.parentloop.first %} </th> {% else %} </td> {% endif %}
-						{% endfor %}
-						</tr>
-					{% endfor %} -->
 				</div>
 			</div>
 		</div>

@@ -74,11 +74,12 @@ def getCurrentUser():
 
 def getResults():
     results = []
-    mycursor.execute('SELECT date, student_id_1, student_name_1, student_id_2, student_name_2, percentage FROM results WHERE trans_id = %s', (session['id'],))
-    res = mycursor.fetchall()
-    if res:
-        for data in res:
-            results.append(data)
+    if isUserLogedin():
+        mycursor.execute('SELECT date, student_id_1, student_name_1, student_id_2, student_name_2, percentage FROM results WHERE trans_id = %s', (session['id'],))
+        res = mycursor.fetchall()
+        if res:
+            for data in res:
+                results.append(data)
     return results
 
 ## End functions
@@ -87,7 +88,19 @@ def getResults():
 
 @app.route("/")
 def home():
-    return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser())
+    ID = set()
+    percent = set()
+    for id in getResults():
+        if id[1] == id[3]:
+            ID.add(id[1])
+        else:
+            ID.add(id[1])
+            ID.add(id[3])
+    for percentage in getResults():
+        score = (percentage[1], percentage[3], percentage[5])
+        percent.add(score)
+
+    return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = getResults(), ids = ID, percents = percent)
 
 ## End home
 
@@ -247,9 +260,11 @@ def profile():
         else:
             ID.add(id[1])
             ID.add(id[3])
+    for percentage in getResults():
+        score = (percentage[1], percentage[3], percentage[5])
+        percent.add(score)
 
-
-    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser(), results = getResults(), ids = ID)
+    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser(), results = getResults(), ids = ID, percents = percent)
 
 ## End profile
 
