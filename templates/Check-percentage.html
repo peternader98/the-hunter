@@ -15,6 +15,11 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="../static/css/util.css">
 	<link rel="stylesheet" type="text/css" href="../static/css/main2.css">
+	<style>
+		body{
+			background: white;
+		}
+	</style>
 {% endblock %}
 
 {% block scripts %}
@@ -53,10 +58,14 @@
 						$("#file").trigger("reset");
 						showMessage(data.status, data.msg)
 
-						var results = data.Results;
 						var dt = new Date();
+						var results = data.Results;
+						var ids = data.ids;
+						var percents = data.percents;
 						var resultID = document.querySelector('#result');
-						console.log(resultID)
+						var idID = document.querySelector('#ids');
+						var table = document.querySelector('#table');
+						
 						results.forEach((result) => {
 							var trow = document.createElement('tr')
 
@@ -82,6 +91,39 @@
 							trow.append(current_date, id_1, name_1, id_2, name_2, percentage)
 
 							resultID.appendChild(trow)
+						})
+						ids.forEach((id) => {
+							var thead = document.createElement('th')
+							thead.innerHTML = id
+							idID.appendChild(thead)
+
+							var tbody = document.createElement('tbody');
+							table.appendChild(tbody);
+
+							var tr = document.createElement('tr');
+							tr.setAttribute('class', 'table100-head');
+							tbody.appendChild(tr);
+
+							var th = document.createElement('th');
+							th.setAttribute('style', 'background: #36304a;');
+							th.innerHTML = id;
+							tr.appendChild(th);
+
+							for(var i = 0; i < ids.length; i++){
+								var td = document.createElement('td');
+								if(id == ids[i]){
+									td.innerHTML = '100%'
+									tr.appendChild(td);
+								}
+								else if(id == percents[i][0] || id == percents[i][1] && ids[i] == percents[i][0] || ids[i] == percents[i][1]){
+									td.innerHTML = String(percents[i][2]).substr(0,5) + '%'
+									tr.appendChild(td);
+								}
+								else{
+									td.innerHTML = 'Hunt'
+									tr.appendChild(td);
+								}
+							}
 						})
 					}
 					if (data.status == false) {
@@ -163,11 +205,11 @@
 							<thead>
 								<tr class="table100-head">
 									<th class="column1">Date</th>
-									<th class="column2">1st ID</th>
-									<th class="column3">1st Name</th>
-									<th class="column4">2nd ID</th>
-									<th class="column5">2nd Name</th>
-									<th class="column6">percentage</th>
+									<th class="column1">1st ID</th>
+									<th class="column1">1st Name</th>
+									<th class="column1">2nd ID</th>
+									<th class="column1">2nd Name</th>
+									<th class="column1">percentage</th>
 								</tr>
 							</thead>
 							<tbody id="result"></tbody>
@@ -177,6 +219,22 @@
 			</div>
 		</div>
 		<!-- End Table Area -->
+
+		<div class="limiter mt-2 mb-2">
+			<div>
+				<div class="wrap-table100">
+					<div class="table100">
+						<table id="table">
+							<thead>
+								<tr class="table100-head" id="ids">
+									<th>student ID</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
 
 	</div><!-- Related demos -->
 </div><!-- /container -->

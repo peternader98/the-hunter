@@ -69,8 +69,9 @@ button:focus {
 .white_bg {
   background: #fff !important; }
 #navbar{
-    background-color: black;
+    background-color: white;
 }
+
 #logo{
     color: snow;
     
@@ -4141,3 +4142,6 @@ h6 {
 /*---------------------------------------------------- */
 
 /*# sourceMappingURL=style.css.map */
+#midNav a{
+  color: black;
+}

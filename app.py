@@ -11,7 +11,7 @@ import datetime
 import utilities.plagiarismcheker as checker
 
 UPLOAD_FOLDER = 'static/uploads/usersFiles/'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx', 'cpp'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx', 'c', 'cpp', 'cs', 'java', 'py', 'html', 'css', 'js'}
 
 app = Flask(__name__)
 
@@ -88,19 +88,7 @@ def getResults():
 
 @app.route("/")
 def home():
-    ID = set()
-    percent = set()
-    for id in getResults():
-        if id[1] == id[3]:
-            ID.add(id[1])
-        else:
-            ID.add(id[1])
-            ID.add(id[3])
-    for percentage in getResults():
-        score = (percentage[1], percentage[3], percentage[5])
-        percent.add(score)
-
-    return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = getResults(), ids = ID, percents = percent)
+    return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = getResults())
 
 ## End home
 
@@ -115,6 +103,8 @@ def upload_file():
         plag_results = []
         allowedFiles = []
         notAllowedFiles = []
+        ID = set()
+        percent = []
 
         # check if the post request has the file part
         if 'files[]' not in request.files:
@@ -135,6 +125,14 @@ def upload_file():
                 print(data)
                 plag_results.append(data)
 
+                # Start result table head
+                ID.add(int(getID(data[0])))
+                ID.add(int(getID(data[1])))
+                
+                score = (int(getID(data[0])), int(getID(data[1])), data[2])
+                percent.append(score)
+                # End result table head
+
                 result = []
                 result.append(session['id'])
                 result.append(datetime.datetime.now())
@@ -148,11 +146,12 @@ def upload_file():
                 print(val)
                 mycursor.execute(sql,val)
                 mydb.commit()
+        print(percent)
 
         if(len(notAllowedFiles) != 0):
-            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results)
+            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results, ids = list(ID), percents = percent, length=len(percent))
         else:   
-            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results)
+            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results, ids = list(ID), percents = percent, length=len(percent))
 
     return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
 

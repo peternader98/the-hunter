@@ -49,7 +49,7 @@
 	<body class="animsition">
 		<div class="page-wrapper">
 			<!-- MENU SIDEBAR-->
-			<aside class="menu-sidebar2">
+			<aside class="menu-sidebar2" >
 				<div class="logo">
 					<a href="/">
 						<img src="../static/img/logo.png" alt="The Hunter" />
@@ -139,8 +139,8 @@
 							<a class="name" href="{{url_for('register_user')}}">Sign in now</a>
 						</div>
 						{% endif %}
-						<nav class="navbar-sidebar2">
-							<ul class="list-unstyled navbar__list">
+						<nav class="navbar-sidebar2" style="background: red !important;" >
+							<ul class="list-unstyled navbar__list"  >
 								<li>
 									<a class="js-arrow" href="/">
 										<i class="fas fa-tachometer-alt"></i>Dashboard
@@ -309,7 +309,7 @@
 											<canvas id="recent-rep2-chart"></canvas>
 										</div>
 									</div>
-									<!-- END RECENT REPORT 2             -->
+									<!-- END RECENT REPORT 2 -->
 								</div>
 								<div class="col-xl-4">
 									<!-- TASK PROGRESS-->
@@ -371,43 +371,6 @@
 						</div>
 					</div>
 					<!-- End Table Area -->
-
-					<div class="limiter">
-						<div>
-							<div class="wrap-table100">
-								<div class="table100">
-									<table>
-										<thead>
-											<tr class="table100-head">
-												<th>student ID</th>
-												{% for id in ids %}
-												<th>{{id}}</th>
-												{% endfor %}
-											</tr>
-										</thead>
-										<tbody>
-											{% for id1 in ids %}
-											<tr class="table100-head">
-												<th style="background: #36304a;">{{id1}}</th>
-												{% for id2 in ids %}
-													{% for percent in percents %}
-														{% if id1 == id2 %}
-														<td>100%</td>
-														{% elif (percent[0] == id1 or percent[1] == id1) and (percent[0] == id2 or percent[1] == id2) %}
-														<td>{{ percent[2] }}</td>
-														{% else %}
-														<td>hunt</td>
-														{% endif %}
-													{% endfor %}
-												{% endfor %}
-											</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
 				</section>
 				{% endif %}
 
