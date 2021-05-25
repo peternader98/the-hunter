@@ -1,13 +1,12 @@
-from flask import Flask, render_template, request, flash, redirect, session, url_for, jsonify
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 from werkzeug.utils import secure_filename
-from werkzeug.datastructures import  FileStorage
 from  passlib.hash import  pbkdf2_sha1 as hash
 import mysql.connector
 import os
 import string
 import random
 import datetime
-
+import json
 import utilities.plagiarismcheker as checker
 
 UPLOAD_FOLDER = 'static/uploads/usersFiles/'
@@ -40,15 +39,6 @@ def changeFileName(fileName):
     newStr = ''.join(random.choice(letters) for i in range(10)) + "-" + fileName
     return newStr
 
-def getID(filename):
-    return ''.join(filename[0:9])
-
-def getName(filename):
-    return ''.join(filename[10:])
-
-def getPercent(result):
-    return ''.join(result[0:5]) + '%'
-
 def jsonToTuple(data):
     mydata = []
     print(data)
@@ -72,23 +62,23 @@ def getCurrentUser():
     dec["image"] = session['image']
     return dec
 
-def getResults():
-    results = []
-    if isUserLogedin():
-        mycursor.execute('SELECT date, student_id_1, student_name_1, student_id_2, student_name_2, percentage FROM results WHERE trans_id = %s', (session['id'],))
-        res = mycursor.fetchall()
-        if res:
-            for data in res:
-                results.append(data)
-    return results
-
 ## End functions
 
 ## Start home
 
 @app.route("/")
 def home():
-    return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = getResults())
+    if getCurrentUser():
+        mycursor.execute('SELECT * FROM filesresult WHERE user_id = %s', (session['id'],))
+        data = mycursor.fetchall()
+        tempList = []
+        dates =  []
+        for i in data:
+            dates.append(i[2].strftime("%m/%d/%Y, %H:%M:%S"))
+            tempList.append(json.loads(i[1]))
+        return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = tempList, dates= dates, len = len(tempList))
+    
+    return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser())
 
 ## End home
 
@@ -100,12 +90,8 @@ def upload_file():
         return redirect(url_for("login"))
     if(request.method == 'POST'):
         uploadedFiles = []
-        plag_results = []
         allowedFiles = []
         notAllowedFiles = []
-        ID = set()
-        percent = []
-
         # check if the post request has the file part
         if 'files[]' not in request.files:
             return "error"
@@ -121,37 +107,15 @@ def upload_file():
                 notAllowedFiles.append(file.filename)
 
         if(len(uploadedFiles) != 0):
-            for data in checker.check_plagiarism(uploadedFiles):
-                print(data)
-                plag_results.append(data)
-
-                # Start result table head
-                ID.add(int(getID(data[0])))
-                ID.add(int(getID(data[1])))
-                
-                score = (int(getID(data[0])), int(getID(data[1])), data[2])
-                percent.append(score)
-                # End result table head
-
-                result = []
-                result.append(session['id'])
-                result.append(datetime.datetime.now())
-                result.append(int(getID(data[0])))
-                result.append(getName(data[0]))
-                result.append(int(getID(data[1])))
-                result.append(getName(data[1]))
-                result.append(getPercent(str(data[2])))
-                sql = "INSERT INTO results (trans_id,date,student_id_1,student_name_1,student_id_2,student_name_2,percentage) VALUES (%s, %s, %s, %s, %s, %s,%s)"
-                val = tuple(result)
-                print(val)
-                mycursor.execute(sql,val)
-                mydb.commit()
-        print(percent)
+            data  = checker.check_plagiarism(uploadedFiles)
+            sql = "INSERT INTO filesresult (user_id,result) VALUES (%s, %s)"
+            mycursor.execute(sql,(session["id"], json.dumps(data[0]),))
+            mydb.commit()
 
         if(len(notAllowedFiles) != 0):
-            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results, ids = list(ID), percents = percent, length=len(percent))
+            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, comparedFiles = data)
         else:   
-            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, Results = plag_results, ids = list(ID), percents = percent, length=len(percent))
+            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, comparedFiles = data[0], keys = data[1])
 
     return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
 
@@ -184,7 +148,7 @@ def register_user():
         form = request.form.to_dict()
         form["image"] = filename
         form["password"] = hash.encrypt(request.form.get("password"))
-        sql = "INSERT INTO users (name,email,password,image) VALUES (%s, %s, %s,%s)"
+        sql = "INSERT INTO users (name,email,password,image) VALUES (%s, %s, %s, %s)"
         val = jsonToTuple(form)
         print(val)
         mycursor.execute(sql,val)
@@ -235,7 +199,7 @@ def logout():
 
 @app.route('/Writing-Tips')
 def table():
-    return render_template('', pagename = 'Writing Tips', currentUser = getCurrentUser())
+    return render_template('Writing-Tips.html', pagename = 'Writing Tips', currentUser = getCurrentUser())
 
 ## End Writing-Tips
 
@@ -251,19 +215,7 @@ def about_us():
 
 @app.route('/Profile', methods=['GET', 'POST'])
 def profile():
-    ID = set()
-    percent = set()
-    for id in getResults():
-        if id[1] == id[3]:
-            ID.add(id[1])
-        else:
-            ID.add(id[1])
-            ID.add(id[3])
-    for percentage in getResults():
-        score = (percentage[1], percentage[3], percentage[5])
-        percent.add(score)
-
-    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser(), results = getResults(), ids = ID, percents = percent)
+    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser())
 
 ## End profile
 

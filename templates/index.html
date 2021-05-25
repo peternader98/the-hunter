@@ -8,6 +8,7 @@
 		<meta name="description" content="au theme template">
 		<meta name="author" content="Hau Nguyen">
 		<meta name="keywords" content="au theme template">
+		<link rel="icon" href="static/img/Home/icon.png" type="image/png">
 
 		<!-- Fontfaces CSS-->
 		<link href="../static/css/font-face.css" rel="stylesheet" media="all">
@@ -354,15 +355,19 @@
 											</tr>
 										</thead>
 										<tbody>
-											{% for result in results %}
-											<tr>
-												<td class="column1">{{result[0]}}</td>
-												<td class="column1">{{result[1]}}</td>
-												<td class="column1">{{result[2]}}</td>
-												<td class="column1">{{result[3]}}</td>
-												<td class="column1">{{result[4]}}</td>
-												<td class="column1">{{result[5]}}</td>
-											</tr>
+											{% for i in range(0,len) %}
+												{%for key, value in results[i].items()%}
+													{% for val in value  %}
+														<tr>
+															<td class="column1">{{dates[i]}}</td>
+															<td class="column1">{{key.split("-")[0]}}</td>
+															<td class="column1">{{key.split("-")[1]}}</td>
+															<td class="column1">{{val["id"]}}</td>
+															<td class="column1">{{val["name"]}}</td>
+															<td class="column1">{{(val["score"]|string)[:5]}}%</td>
+														</tr>
+													{% endfor %}
+												{% endfor %}
 											{% endfor %}
 										</tbody>
 									</table>

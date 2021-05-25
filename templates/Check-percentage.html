@@ -52,6 +52,7 @@
 				processData: false,
 				contentType: false,
 				cache: false,
+				
 				success: function (data) {
 					console.log(data)
 					if (data.status == true) {
@@ -59,13 +60,44 @@
 						showMessage(data.status, data.msg)
 
 						var dt = new Date();
-						var results = data.Results;
+						var results = data.comparedFiles;
+						var keys =  data.keys
+						
 						var ids = data.ids;
 						var percents = data.percents;
 						var resultID = document.querySelector('#result');
 						var idID = document.querySelector('#ids');
 						var table = document.querySelector('#table');
-						
+						console.log(results)
+						console.log(data.keys)
+
+						keys.forEach((ele, index)=>{
+							$('#ids').append(`<th>${ele}</th>`)
+							
+																						
+						})
+
+						keys.forEach((ele, index)=>{
+							console.log(results[ele])
+							
+							let str = `<tr><td>${ele}</td>`
+							results[ele].forEach((el, index2)=>{
+								
+								if(index == index2)
+									str += `<td>0</td>`
+
+								str+= `<td>${el.score}</td>`
+								
+									
+									
+							})
+							if(index == keys.length - 1)
+								str+="<td>0</td></tr>"
+							else
+							  	str += "</tr>"
+							$('#mytbody').append(str)															
+						})
+						/*
 						results.forEach((result) => {
 							var trow = document.createElement('tr')
 
@@ -125,7 +157,9 @@
 								}
 							}
 						})
+						*/
 					}
+					
 					if (data.status == false) {
 						let strError = ""
 						let strSuccess = ""
@@ -176,14 +210,14 @@
 
 {% include 'includes/banner.html' %}
 
-<div class="container">
+<div class="container" >
 	<div class="content">
 		<div class="box text-center">
-			<form id="file">
+			<form id="file" >
 				<input type="file" id="input" name="files[]" multiple="true" autocomplete="off"
 					style="margin:auto; width:0px" class="inputfile inputfile-5"
 					data-multiple-caption="{count} files selected" multiple style="opacity: 0;" required />
-				<label for="input">
+				<label for="input" >
 					<figure>
 						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
 							<path
@@ -196,30 +230,6 @@
 			<button id="upload" style="border-radius: 20px;padding: 14px 40px;background-color: #f44336; color: white;">Check</button>
 		</div>
 
-		<!-- Start Table Area -->
-		<div class="limiter">
-			<div style="margin-top: 25px;margin-bottom: 25px;">
-				<div class="wrap-table100">
-					<div class="table100">
-						<table>
-							<thead>
-								<tr class="table100-head">
-									<th class="column1">Date</th>
-									<th class="column1">1st ID</th>
-									<th class="column1">1st Name</th>
-									<th class="column1">2nd ID</th>
-									<th class="column1">2nd Name</th>
-									<th class="column1">percentage</th>
-								</tr>
-							</thead>
-							<tbody id="result"></tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Table Area -->
-
 		<div class="limiter mt-2 mb-2">
 			<div>
 				<div class="wrap-table100">
@@ -230,6 +240,9 @@
 									<th>student ID</th>
 								</tr>
 							</thead>
+							<tbody id="mytbody">
+								
+							</tbody>
 						</table>
 					</div>
 				</div>
