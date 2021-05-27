@@ -62,102 +62,28 @@
 						var dt = new Date();
 						var results = data.comparedFiles;
 						var keys =  data.keys
-						
-						var ids = data.ids;
-						var percents = data.percents;
-						var resultID = document.querySelector('#result');
-						var idID = document.querySelector('#ids');
-						var table = document.querySelector('#table');
 						console.log(results)
 						console.log(data.keys)
 
 						keys.forEach((ele, index)=>{
-							$('#ids').append(`<th>${ele}</th>`)
-							
-																						
+							$('#ids').append(`<th>${ele}</th>`)									
 						})
 
 						keys.forEach((ele, index)=>{
 							console.log(results[ele])
-							
-							let str = `<tr><td>${ele}</td>`
+							let str = `<tr class="table100-head"><th style="background: #36304a;">${ele}</th>`
 							results[ele].forEach((el, index2)=>{
-								
 								if(index == index2)
-									str += `<td>0</td>`
-
-								str+= `<td>${el.score}</td>`
-								
-									
-									
+									str += `<td>0%</td>`
+								percent = String(el.score).substr(0,5) + '%'
+								str+= `<td>${percent}</td>`
 							})
 							if(index == keys.length - 1)
-								str+="<td>0</td></tr>"
+								str+="<td>0%</td></tr>"
 							else
 							  	str += "</tr>"
 							$('#mytbody').append(str)															
 						})
-						/*
-						results.forEach((result) => {
-							var trow = document.createElement('tr')
-
-							var current_date = document.createElement('td')
-							var id_1 = document.createElement('td')
-							var name_1 = document.createElement('td')
-							var id_2 = document.createElement('td')
-							var name_2 = document.createElement('td')
-							var percentage = document.createElement('td')
-							current_date.setAttribute('class', 'column1')
-							id_1.setAttribute('class', 'column1')
-							name_1.setAttribute('class', 'column1')
-							id_2.setAttribute('class', 'column1')
-							name_2.setAttribute('class', 'column1')
-							percentage.setAttribute('class', 'column1')
-							current_date.innerHTML = (("0"+dt.getDate()).slice(-2)) +"/"+ (("0"+(dt.getMonth()+1)).slice(-2)) +"/"+ (dt.getFullYear()) +" "+ (("0"+dt.getHours()).slice(-2)) +":"+ (("0"+dt.getMinutes()).slice(-2));
-							id_1.innerHTML = String(result[0].substr(0,9));
-							name_1.innerHTML = String(result[0].substr(10,));
-							id_2.innerHTML = String(result[1].substr(0,9));;
-							name_2.innerHTML = String(result[1].substr(10,));;
-							percentage.innerHTML = String(result[2]).substr(0,5) + '%';
-
-							trow.append(current_date, id_1, name_1, id_2, name_2, percentage)
-
-							resultID.appendChild(trow)
-						})
-						ids.forEach((id) => {
-							var thead = document.createElement('th')
-							thead.innerHTML = id
-							idID.appendChild(thead)
-
-							var tbody = document.createElement('tbody');
-							table.appendChild(tbody);
-
-							var tr = document.createElement('tr');
-							tr.setAttribute('class', 'table100-head');
-							tbody.appendChild(tr);
-
-							var th = document.createElement('th');
-							th.setAttribute('style', 'background: #36304a;');
-							th.innerHTML = id;
-							tr.appendChild(th);
-
-							for(var i = 0; i < ids.length; i++){
-								var td = document.createElement('td');
-								if(id == ids[i]){
-									td.innerHTML = '100%'
-									tr.appendChild(td);
-								}
-								else if(id == percents[i][0] || id == percents[i][1] && ids[i] == percents[i][0] || ids[i] == percents[i][1]){
-									td.innerHTML = String(percents[i][2]).substr(0,5) + '%'
-									tr.appendChild(td);
-								}
-								else{
-									td.innerHTML = 'Hunt'
-									tr.appendChild(td);
-								}
-							}
-						})
-						*/
 					}
 					
 					if (data.status == false) {
@@ -240,9 +166,7 @@
 									<th>student ID</th>
 								</tr>
 							</thead>
-							<tbody id="mytbody">
-								
-							</tbody>
+							<tbody id="mytbody"></tbody>
 						</table>
 					</div>
 				</div>

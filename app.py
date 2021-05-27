@@ -5,7 +5,6 @@ import mysql.connector
 import os
 import string
 import random
-import datetime
 import json
 import utilities.plagiarismcheker as checker
 
@@ -76,7 +75,13 @@ def home():
         for i in data:
             dates.append(i[2].strftime("%m/%d/%Y, %H:%M:%S"))
             tempList.append(json.loads(i[1]))
-        return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = tempList, dates= dates, len = len(tempList))
+
+        mycursor.execute('SELECT email FROM users',)
+        users = mycursor.fetchall()
+        Users = [user for user in users]
+        length_files = [file for file in os.listdir(os.path.join(app.config['UPLOAD_FOLDER']))]
+        user_files = [doc for doc in os.listdir(os.path.join(app.config['UPLOAD_FOLDER'])) if doc.startswith(str(session['id']))]
+        return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = tempList, dates = dates, len = len(tempList), users = len(Users), lengthFiles = len(length_files), userFiles = len(user_files))
     
     return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser())
 
@@ -101,7 +106,7 @@ def upload_file():
         for file in files:
             if file and allowed_file(file.filename):
                 allowedFiles.append(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + file.filename))
                 uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             else:
                 notAllowedFiles.append(file.filename)

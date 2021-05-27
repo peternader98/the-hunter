@@ -1,4 +1,3 @@
-import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from werkzeug.utils import secure_filename
@@ -25,7 +24,6 @@ def check_plagiarism(files):
         comparedFiels[fileName] = []
         keys.append(fileName)  
         
-        
         new_vectors = s_vectors.copy()
         current_index = new_vectors.index((student_a, text_vector_a))
         del new_vectors[current_index]
@@ -43,6 +41,4 @@ def check_plagiarism(files):
                 "score" : score[2]
             })
        
-        
-    
     return  comparedFiels, keys

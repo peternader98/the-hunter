@@ -195,11 +195,11 @@
 										<div class="overview__inner">
 											<div class="overview-box clearfix">
 												<div class="icon">
-													<i class="zmdi zmdi-account-o"></i>
+													<i class="zmdi zmdi-accounts-outline"></i>
 												</div>
 												<div class="text">
-													<h2>10368</h2>
-													<span>members online</span>
+													<h2>{{users}}</h2>
+													<span>members</span>
 												</div>
 											</div>
 											<div class="overview-chart">
@@ -213,11 +213,11 @@
 										<div class="overview__inner">
 											<div class="overview-box clearfix">
 												<div class="icon">
-													<i class="zmdi zmdi-shopping-cart"></i>
+													<i class="zmdi zmdi-file"></i>
 												</div>
 												<div class="text">
-													<h2>388,688</h2>
-													<span>items solid</span>
+													<h2>{{userFiles}}</h2>
+													<span>your files</span>
 												</div>
 											</div>
 											<div class="overview-chart">
@@ -231,11 +231,11 @@
 										<div class="overview__inner">
 											<div class="overview-box clearfix">
 												<div class="icon">
-													<i class="zmdi zmdi-calendar-note"></i>
+													<i class="zmdi zmdi-file"></i>
 												</div>
 												<div class="text">
-													<h2>1,086</h2>
-													<span>this week</span>
+													<h2>{{lengthFiles}}</h2>
+													<span>uploaded files</span>
 												</div>
 											</div>
 											<div class="overview-chart">
@@ -249,11 +249,11 @@
 										<div class="overview__inner">
 											<div class="overview-box clearfix">
 												<div class="icon">
-													<i class="zmdi zmdi-money"></i>
+													<i class="zmdi zmdi-time-restore"></i>
 												</div>
 												<div class="text">
-													<h2>$1,060,386</h2>
-													<span>total earnings</span>
+													<h2>{{lengthFiles}}</h2>
+													<span>last check</span>
 												</div>
 											</div>
 											<div class="overview-chart">
@@ -338,48 +338,64 @@
 
 				{% if currentUser %}
 				<section>
+					<div class="container-fluid">
 					<!-- Start Table Area -->
-					<div class="limiter">
-						<div>
-							<div class="wrap-table100">
-								<div class="table100">
-									<table>
-										<thead>
-											<tr class="table100-head">
-												<th class="column1">Date</th>
-												<th class="column1">1st ID</th>
-												<th class="column1">1st Name</th>
-												<th class="column1">2nd ID</th>
-												<th class="column1">2nd Name</th>
-												<th class="column1">percentage</th>
-											</tr>
-										</thead>
-										<tbody>
-											{% for i in range(0,len) %}
-												{%for key, value in results[i].items()%}
-													{% for val in value  %}
-														<tr>
-															<td class="column1">{{dates[i]}}</td>
-															<td class="column1">{{key.split("-")[0]}}</td>
-															<td class="column1">{{key.split("-")[1]}}</td>
-															<td class="column1">{{val["id"]}}</td>
-															<td class="column1">{{val["name"]}}</td>
-															<td class="column1">{{(val["score"]|string)[:5]}}%</td>
-														</tr>
+						<div class="limiter">
+							<div>
+								<div class="wrap-table100">
+									<div class="table100">
+										<table>
+											<thead>
+												<tr class="table100-head">
+													<th class="column1"></th>
+													<th class="column1">Date</th>
+													<th class="column1">1st ID</th>
+													<th class="column1">1st Name</th>
+													<th class="column1">2nd ID</th>
+													<th class="column1">2nd Name</th>
+													<th class="column1">percentage</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for i in range(0,len) %}
+													{% for key, value in results[i].items() %}
+														{% for val in value %}
+															<tr>
+																<td class="column1">{{loop.index}}</td>
+																<td class="column1">{{dates[i]}}</td>
+																<td class="column1">{{key.split("-")[0]}}</td>
+																<td class="column1">{{key.split("-")[1]}}</td>
+																<td class="column1">{{val["id"]}}</td>
+																<td class="column1">{{val["name"]}}</td>
+																<td class="column1">{{(val["score"]|string)[:5]}}%</td>
+															</tr>
+														{% endfor %}
 													{% endfor %}
 												{% endfor %}
-											{% endfor %}
-										</tbody>
-									</table>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					<!-- End Table Area -->
+					</div>
+				</section>
+				{% endif %}
+
+				<section>
+					<div class="container-fluid">  
+						<div class="row">
+							<div class="col-md-12">
+								<div class="copyright">
+									<p>Copyright © <a href="/">The Hunter</a> .</p>
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- End Table Area -->
 				</section>
-				{% endif %}
 
-				<!-- END PAGE CONTAINER-->
+				<!-- END PAGE CONTAINER -->
 			</div>
 		</div>
 
