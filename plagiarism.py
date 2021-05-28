@@ -1,6 +1,6 @@
-import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from difflib import SequenceMatcher
 
 UPLOAD_FOLDER = 'static/uploads/usersFiles/'
 ALLOWED_EXTENSIONS = {'.txt', '.pdf', '.doc', '.docx', '.c', '.cpp', '.cs', '.java', '.py', '.html', '.css', '.js'}

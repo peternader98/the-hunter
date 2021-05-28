@@ -106,8 +106,8 @@ def upload_file():
         for file in files:
             if file and allowed_file(file.filename):
                 allowedFiles.append(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + file.filename))
-                uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
+                uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
             else:
                 notAllowedFiles.append(file.filename)
 
@@ -118,7 +118,7 @@ def upload_file():
             mydb.commit()
 
         if(len(notAllowedFiles) != 0):
-            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, comparedFiles = data)
+            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, comparedFiles = data[0], keys = data[1])
         else:   
             return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, comparedFiles = data[0], keys = data[1])
 

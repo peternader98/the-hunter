@@ -6,8 +6,8 @@ def changeFileName(fileName):
     return ''.join(fileName[26:])
 
 def check_plagiarism(files):
-    comparedFiels = {}
-    student_notes = [open(File).read() for File in  files]
+    comparedFiles = {}
+    student_notes = [open(File).read() for File in files]
 
     vectorize = lambda Text: TfidfVectorizer().fit_transform(Text).toarray()
     similarity = lambda doc1, doc2: cosine_similarity([doc1, doc2])
@@ -20,8 +20,8 @@ def check_plagiarism(files):
     
     for student_a, text_vector_a in s_vectors:
         fileName = changeFileName(student_a)
-        fileName = fileName[:-(len(fileName) - fileName.index("."))]
-        comparedFiels[fileName] = []
+        fileName = fileName[(fileName.index("+") + 1):-(len(fileName) - fileName.index("."))]
+        comparedFiles[fileName] = []
         keys.append(fileName)  
         
         new_vectors = s_vectors.copy()
@@ -35,10 +35,10 @@ def check_plagiarism(files):
             student_pair = sorted((student_a, student_b))
             score = (changeFileName(secure_filename(student_pair[0])), changeFileName(secure_filename(student_pair[1])), sim_score * 100)
             plagiarism_results.add(score)
-            comparedFiels[fileName].append({
+            comparedFiles[fileName].append({
                 "id" : tempStudent[0],
                 "name" : tempStudent[1],
                 "score" : score[2]
             })
        
-    return  comparedFiels, keys
+    return  comparedFiles, keys
