@@ -106,7 +106,7 @@
 										<a href="{{url_for('upload_file')}}">Checking plagiarism</a>
 									</li>
 									<li>
-										<a href="{{url_for('about_us')}}">About US</a>
+										<a href="{{url_for('about_us')}}">Contact US</a>
 									</li>
 								</ul>
 							</li>
@@ -175,7 +175,7 @@
 											<a href="{{url_for('upload_file')}}">Checking plagiarism</a>
 										</li>
 										<li>
-											<a href="{{url_for('about_us')}}">About US</a>
+											<a href="{{url_for('about_us')}}">Contact US</a>
 										</li>
 									</ul>
 								</li>
@@ -190,7 +190,7 @@
 					<div class="section__content section__content--p30">
 						<div class="container-fluid">
 							<div class="row">
-								<div class="col-sm-6 col-lg-3">
+								<div class="col-sm-6 col-lg-4">
 									<div class="overview-item overview-item--c1">
 										<div class="overview__inner">
 											<div class="overview-box clearfix">
@@ -202,13 +202,10 @@
 													<span>members</span>
 												</div>
 											</div>
-											<div class="overview-chart">
-												<canvas id="widgetChart1"></canvas>
-											</div>
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-6 col-lg-3">
+								<div class="col-sm-6 col-lg-4">
 									<div class="overview-item overview-item--c2">
 										<div class="overview__inner">
 											<div class="overview-box clearfix">
@@ -220,13 +217,10 @@
 													<span>your files</span>
 												</div>
 											</div>
-											<div class="overview-chart">
-												<canvas id="widgetChart2"></canvas>
-											</div>
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-6 col-lg-3">
+								<div class="col-sm-6 col-lg-4">
 									<div class="overview-item overview-item--c3">
 										<div class="overview__inner">
 											<div class="overview-box clearfix">
@@ -238,27 +232,6 @@
 													<span>uploaded files</span>
 												</div>
 											</div>
-											<div class="overview-chart">
-												<canvas id="widgetChart3"></canvas>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-6 col-lg-3">
-									<div class="overview-item overview-item--c4">
-										<div class="overview__inner">
-											<div class="overview-box clearfix">
-												<div class="icon">
-													<i class="zmdi zmdi-time-restore"></i>
-												</div>
-												<div class="text">
-													<h2>{{lengthFiles}}</h2>
-													<span>last check</span>
-												</div>
-											</div>
-											<div class="overview-chart">
-												<canvas id="widgetChart4"></canvas>
-											</div>
 										</div>
 									</div>
 								</div>
@@ -268,132 +241,174 @@
 				</section>
 				<!-- END STATISTIC-->
 
+				{% if not currentUser %}
 				<section>
 					<div class="section__content section__content--p30">
 						<div class="container-fluid">
 							<div class="row">
-								<div class="col-xl-8">
-									<!-- RECENT REPORT 2-->
-									<div class="recent-report2">
-										<h3 class="title-3">recent reports</h3>
-										<div class="chart-info">
-											<div class="chart-info__left">
-												<div class="chart-note">
-													<span class="dot dot--blue"></span>
-													<span>products</span>
+								<div class="col-xl-12">
+									<!-- start last check -->
+									<div class="overview-item overview-item--c4">
+										<div class="overview__inner">
+											<div class="overview-box clearfix">
+												<div class="icon" style="margin-bottom: 10px;">
+													<i class="zmdi zmdi-time-restore"><span>	last check</span></i>
 												</div>
-												<div class="chart-note">
-													<span class="dot dot--green"></span>
-													<span>Services</span>
+												<div class="text">
 												</div>
 											</div>
-											<div class="chart-info-right">
-												<div class="rs-select2--dark rs-select2--md m-r-10">
-													<select class="js-select2" name="property">
-														<option selected="selected">All Properties</option>
-														<option value="">Products</option>
-														<option value="">Services</option>
-													</select>
-													<div class="dropDownSelect2"></div>
-												</div>
-												<div class="rs-select2--dark rs-select2--sm">
-													<select class="js-select2 au-select-dark" name="time">
-														<option selected="selected">All Time</option>
-														<option value="">By Month</option>
-														<option value="">By Day</option>
-													</select>
-													<div class="dropDownSelect2"></div>
-												</div>
-											</div>
-										</div>
-										<div class="recent-report__chart">
-											<canvas id="recent-rep2-chart"></canvas>
 										</div>
 									</div>
-									<!-- END RECENT REPORT 2 -->
-								</div>
-								<div class="col-xl-4">
-									<!-- TASK PROGRESS-->
-									<div class="task-progress">
-										<h3 class="title-3">Highest percentages</h3>
-										<div class="au-skill-container">
-											{% for percent in percents %}
-											<div class="au-progress">
-												<span class="au-progress__title">{{percent[0]}} and {{percent[1]}}</span>
-												<div class="au-progress__bar">
-													<div class="au-progress__inner js-progressbar-simple" role="progressbar" data-transitiongoal="{{percent[2]}}">
-														<span class="au-progress__value js-value"></span>
-													</div>
-												</div>
-											</div>
-											{% endfor %}
-										</div>
-									</div>
-									<!-- END TASK PROGRESS-->
+									<!-- end last check -->
 								</div>
 							</div>
 						</div>
 					</div>
 				</section>
-
-				{% if currentUser %}
 				<section>
-					<div class="container-fluid">
-					<!-- Start Table Area -->
-						<div class="limiter">
-							<div>
-								<div class="wrap-table100">
-									<div class="table100">
-										<table>
-											<thead>
-												<tr class="table100-head">
-													<th class="column1"></th>
-													<th class="column1">Date</th>
-													<th class="column1">1st ID</th>
-													<th class="column1">1st Name</th>
-													<th class="column1">2nd ID</th>
-													<th class="column1">2nd Name</th>
-													<th class="column1">percentage</th>
-												</tr>
-											</thead>
-											<tbody>
-												{% for i in range(0,len) %}
-													{% for key, value in results[i].items() %}
-														{% for val in value %}
-															<tr>
-																<td class="column1">{{loop.index}}</td>
-																<td class="column1">{{dates[i]}}</td>
-																<td class="column1">{{key.split("-")[0]}}</td>
-																<td class="column1">{{key.split("-")[1]}}</td>
-																<td class="column1">{{val["id"]}}</td>
-																<td class="column1">{{val["name"]}}</td>
-																<td class="column1">{{(val["score"]|string)[:5]}}%</td>
-															</tr>
-														{% endfor %}
-													{% endfor %}
-												{% endfor %}
-											</tbody>
-										</table>
+					<div class="section__content section__content--p30">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-xl-12">
+									<!-- start last check -->
+									<div class="overview-item overview-item--c3">
+										<div class="overview__inner">
+											<div class="overview-box clearfix">
+												<div class="icon" style="margin-bottom: 10px;">
+													<i class="zmdi zmdi-time-restore"><span>	History</span></i>
+												</div>
+												<div class="text">
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					<!-- End Table Area -->
 					</div>
 				</section>
 				{% endif %}
 
+				{% if currentUser %}
 				<section>
-					<div class="container-fluid">  
-						<div class="row">
-							<div class="col-md-12">
-								<div class="copyright">
-									<p>Copyright © <a href="/">The Hunter</a> .</p>
+					<div class="section__content section__content--p30">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-xl-12">
+									<!-- start last check -->
+									<div class="overview-item overview-item--c4">
+										<div class="overview__inner">
+											<div class="overview-box clearfix">
+												<div class="icon" style="margin-bottom: 10px;">
+													<i class="zmdi zmdi-time-restore"><span>	Last check</span></i>
+												</div>
+												<div class="text">
+													<table>
+														<thead>
+															<tr class="table100-head">
+																<th class="column1">Date</th>
+																<th class="column1">1st ID</th>
+																<th class="column1">1st Name</th>
+																<th class="column1">2nd ID</th>
+																<th class="column1">2nd Name</th>
+																<th class="column1">percentage</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for i in range(0,lenLR) %}
+																{% for key, value in lastResult[i].items() %}
+																	{% for val in value %}
+																		<tr>
+																			<td class="column1">{{date[i]}}</td>
+																			<td class="column1">{{key.split("-")[0]}}</td>
+																			<td class="column1">{{key.split("-")[1]}}</td>
+																			<td class="column1">{{val["id"]}}</td>
+																			<td class="column1">{{val["name"]}}</td>
+																			<td class="column1">{{(val["score"]|string)[:5]}}%</td>
+																		</tr>
+																	{% endfor %}
+																{% endfor %}
+															{% endfor %}
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- end last check -->
 								</div>
 							</div>
 						</div>
 					</div>
 				</section>
+
+				<section>
+					<div class="section__content section__content--p30">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-xl-12">
+									<!-- start last check -->
+									<div class="overview-item overview-item--c3">
+										<div class="overview__inner">
+											<div class="overview-box clearfix">
+												<div class="icon" style="margin-bottom: 10px;">
+													<i class="zmdi zmdi-time-restore"><span>	History</span></i>
+												</div>
+												<div class="text">
+													<!-- Start Table Area -->
+													<table>
+														<thead>
+															<tr class="table100-head">
+																<th class="column1">Date</th>
+																<th class="column1">1st ID</th>
+																<th class="column1">1st Name</th>
+																<th class="column1">2nd ID</th>
+																<th class="column1">2nd Name</th>
+																<th class="column1">percentage</th>
+															</tr>
+														</thead>
+														<tbody>
+															{% for i in range(0,len) %}
+																{% for key, value in results[i].items() %}
+																	{% for val in value %}
+																		<tr>
+																			<td class="column1">{{dates[i]}}</td>
+																			<td class="column1">{{key.split("-")[0]}}</td>
+																			<td class="column1">{{key.split("-")[1]}}</td>
+																			<td class="column1">{{val["id"]}}</td>
+																			<td class="column1">{{val["name"]}}</td>
+																			<td class="column1">{{(val["score"]|string)[:5]}}%</td>
+																		</tr>
+																	{% endfor %}
+																{% endfor %}
+															{% endfor %}
+														</tbody>
+													</table>
+													<!-- End Table Area -->
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				{% endif %}
+
+				<footer>
+					<section>
+						<div class="container-fluid">  
+							<div class="row">
+								<div class="col-md-12">
+									<div class="copyright">
+										<p>Copyright © <a href="/">The Hunter</a> .</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</footer>
 
 				<!-- END PAGE CONTAINER -->
 			</div>

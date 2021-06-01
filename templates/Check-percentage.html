@@ -38,6 +38,10 @@
 		}
 	}
 
+	$(document).on('click', '#reload', function(e){
+			location.reload()
+	})
+
 	$(document).on('click', '#upload', function (e) {
 
 		var formdata = new FormData($('#file')[0]);
@@ -59,7 +63,7 @@
 						$("#file").trigger("reset");
 						showMessage(data.status, data.msg)
 
-						var dt = new Date();
+						var percentArray = []
 						var results = data.comparedFiles;
 						var keys =  data.keys
 						console.log(results)
@@ -75,6 +79,7 @@
 							results[ele].forEach((el, index2)=>{
 								if(index == index2)
 									str += `<td>0%</td>`
+								percentArray.push((ele,el.id+"-"+el.name,el.score))
 								percent = String(el.score).substr(0,5) + '%'
 								str+= `<td>${percent}</td>`
 							})
@@ -154,6 +159,7 @@
 				</label>
 			</form>
 			<button id="upload" style="border-radius: 20px;padding: 14px 40px;background-color: #f44336; color: white;">Check</button>
+			<button id="reload" style="border-radius: 20px;padding: 14px 40px;background-color: #f44336; color: white;">Clear</button>
 		</div>
 
 		<div class="limiter mt-2 mb-2">
@@ -171,6 +177,10 @@
 					</div>
 				</div>
 			</div>
+		</div>
+
+		<div>
+
 		</div>
 
 	</div><!-- Related demos -->

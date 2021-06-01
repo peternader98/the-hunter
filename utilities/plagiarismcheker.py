@@ -22,14 +22,13 @@ def check_plagiarism(files):
         fileName = changeFileName(student_a)
         fileName = fileName[(fileName.index("+") + 1):-(len(fileName) - fileName.index("."))]
         comparedFiles[fileName] = []
-        keys.append(fileName)  
-        
+        keys.append(fileName)
         new_vectors = s_vectors.copy()
         current_index = new_vectors.index((student_a, text_vector_a))
         del new_vectors[current_index]
         for student_b , text_vector_b in new_vectors:
             tempStudent = changeFileName(student_b)
-            tempStudent = tempStudent[:-(len(tempStudent) - tempStudent.index("."))]
+            tempStudent = tempStudent[(tempStudent.index("+") + 1):-(len(tempStudent) - tempStudent.index("."))]
             tempStudent =  tempStudent.split("-")
             sim_score = similarity(text_vector_a, text_vector_b)[0][1]            
             student_pair = sorted((student_a, student_b))

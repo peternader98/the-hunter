@@ -70,18 +70,28 @@ def home():
     if getCurrentUser():
         mycursor.execute('SELECT * FROM filesresult WHERE user_id = %s', (session['id'],))
         data = mycursor.fetchall()
-        tempList = []
+        results = []
         dates =  []
         for i in data:
             dates.append(i[2].strftime("%m/%d/%Y, %H:%M:%S"))
-            tempList.append(json.loads(i[1]))
+            results.append(json.loads(i[1]))
 
         mycursor.execute('SELECT email FROM users',)
         users = mycursor.fetchall()
         Users = [user for user in users]
         length_files = [file for file in os.listdir(os.path.join(app.config['UPLOAD_FOLDER']))]
         user_files = [doc for doc in os.listdir(os.path.join(app.config['UPLOAD_FOLDER'])) if doc.startswith(str(session['id']))]
-        return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(), results = tempList, dates = dates, len = len(tempList), users = len(Users), lengthFiles = len(length_files), userFiles = len(user_files))
+        mycursor.execute('SELECT * FROM filesresult WHERE user_id = %s ORDER BY id DESC LIMIT 1', (session['id'],))
+        last_result = mycursor.fetchall()
+        dataList = []
+        date =  []
+        for i in last_result:
+            date.append(i[2].strftime("%m/%d/%Y, %H:%M:%S"))
+            dataList.append(json.loads(i[1]))
+        return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser(),
+         results = results, dates = dates, len = len(results),
+          users = len(Users), lengthFiles = len(length_files), userFiles = len(user_files),
+           lastResult = dataList, date = date, lenLR = len(dataList))
     
     return render_template("index.html", pagename = "Home Page", currentUser = getCurrentUser())
 
@@ -212,7 +222,7 @@ def table():
 
 @app.route('/Aboutus')
 def about_us():
-    return render_template('About-Us.html', pagename = 'About us', currentUser = getCurrentUser())
+    return render_template('About-Us.html', pagename = 'contact us', currentUser = getCurrentUser())
 
 ## End about-us
 
