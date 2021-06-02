@@ -61,6 +61,12 @@ def getCurrentUser():
     dec["image"] = session['image']
     return dec
 
+def convertToBinaryData(filename):
+    # Convert digital data to binary format
+    with open(filename, 'rb') as file:
+        binaryData = file.read()
+    return binaryData
+
 ## End functions
 
 ## Start home
@@ -115,6 +121,10 @@ def upload_file():
         
         for file in files:
             if file and allowed_file(file.filename):
+                if not os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename)):
+                    converted_file = convertToBinaryData(app.config['UPLOAD_FOLDER'] + file.filename)
+                    mycursor.execute('INSERT INTO files (file,fileName,userID) VALUES (%s, %s, %s)', (converted_file, file.filename, session['id']))
+                    mydb.commit()
                 allowedFiles.append(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
                 uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
