@@ -50,7 +50,6 @@ PyYAML==5.4.1
 pyzmq==22.1.0
 regex==2021.3.17
 requests==2.25.1
-rpy2==3.4.2
 scikit-learn==0.24.1
 scipy==1.6.0
 shellescape==3.8.1
