@@ -30,14 +30,12 @@ def check_plagiarism(files):
             tempStudent = changeFileName(student_b)
             tempStudent = tempStudent[(tempStudent.index("+") + 1):-(len(tempStudent) - tempStudent.index("."))]
             tempStudent =  tempStudent.split("-")
-            sim_score = similarity(text_vector_a, text_vector_b)[0][1]            
-            student_pair = sorted((student_a, student_b))
-            score = (changeFileName(secure_filename(student_pair[0])), changeFileName(secure_filename(student_pair[1])), sim_score * 100)
+            score = (similarity(text_vector_a, text_vector_b)[0][1]) * 100
             plagiarism_results.add(score)
             comparedFiles[fileName].append({
                 "id" : tempStudent[0],
                 "name" : tempStudent[1],
-                "score" : score[2]
+                "score" : score
             })
        
     return  comparedFiles, keys
