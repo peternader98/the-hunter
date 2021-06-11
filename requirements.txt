@@ -69,4 +69,5 @@ wcwidth==0.2.5
 Werkzeug==1.0.1
 wrapt==1.12.1
 gunicorn
-wsgi
+mod-wsgi
+
