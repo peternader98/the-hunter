@@ -211,14 +211,6 @@ def logout():
 
 ## End log-out
 
-## Start Writing-Tips
-
-@app.route('/Writing-Tips')
-def table():
-    return render_template('Writing-Tips.html', pagename = 'Writing Tips', currentUser = getCurrentUser())
-
-## End Writing-Tips
-
 ## Start about-us
 
 @app.route('/Aboutus')
@@ -226,14 +218,6 @@ def about_us():
     return render_template('About-Us.html', pagename = 'contact us', currentUser = getCurrentUser())
 
 ## End about-us
-
-## Start profile
-
-@app.route('/Profile', methods=['GET', 'POST'])
-def profile():
-    return render_template('history.html', pagename = 'Profile', currentUser = getCurrentUser())
-
-## End profile
 
 if __name__ == '__main__':
     app.run(debug = True)
