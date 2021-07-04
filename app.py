@@ -43,7 +43,15 @@ def jsonToTuple(data):
     print(data)
     for v in data:
         mydata.append(data[v])
-    return tuple(mydata)   
+    return tuple(mydata)
+
+def toTuple(data, id):
+    mydata = []
+    print(data)
+    for v in data:
+        mydata.append(data[v])
+    mydata.append(id)
+    return tuple(mydata)      
 
 def isUserLogedin():
     logedin = session.get('loggedin')
@@ -106,8 +114,8 @@ def upload_file():
         return redirect(url_for("login"))
     if(request.method == 'POST'):
         uploadedFiles = []
-        allowedFiles = []
         notAllowedFiles = []
+        emptyFiles = []
         # check if the post request has the file part
         if 'files[]' not in request.files:
             return "error"
@@ -116,9 +124,12 @@ def upload_file():
         
         for file in files:
             if file and allowed_file(file.filename):
-                allowedFiles.append(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
-                uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
+                if os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename)) == 0:
+                    emptyFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
+                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
+                else:
+                    uploadedFiles.append(os.path.join(app.config['UPLOAD_FOLDER'], str(session["id"]) + '+' + file.filename))
             else:
                 notAllowedFiles.append(file.filename)
 
@@ -128,10 +139,10 @@ def upload_file():
             mycursor.execute(sql,(session["id"], json.dumps(data[0]),))
             mydb.commit()
 
-        if(len(notAllowedFiles) != 0):
-            return jsonify(status = False, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, comparedFiles = data[0], keys = data[1])
+        if(len(notAllowedFiles) != 0 or len(emptyFiles) != 0):
+            return jsonify(status = False, msg = "Your Files are uploded", emptyFiles = emptyFiles, notAllowedFiles = notAllowedFiles, uploadedFiles = uploadedFiles)
         else:   
-            return jsonify(status = True, msg = "Your Files are uploded", notAllowedFiles = notAllowedFiles, allowedFiles = allowedFiles, comparedFiles = data[0], keys = data[1])
+            return jsonify(status = True, msg = "Your Files are uploded", emptyFiles = emptyFiles, notAllowedFiles = notAllowedFiles, comparedFiles = data[0], keys = data[1])
 
     return render_template('Check-percentage.html', pagename = 'Check Plagiarism', currentUser = getCurrentUser())
 
@@ -210,6 +221,24 @@ def logout():
     return redirect(url_for('home'))
 
 ## End log-out
+
+@app.route('/change photo', methods = ['GET', 'POST'])
+def changePhoto():
+    if(request.method == "GET"):
+        return render_template("change-photo.html" , pagename = "registration")
+    else:
+        filename = "placeholder.png"
+        file = request.files['file']
+        if file.filename != "":
+            filename = changeFileName(secure_filename(file.filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+"../users/",  filename))
+        form = request.form.to_dict()
+        form["image"] = filename
+        sql = 'UPDATE users SET image = %s WHERE id = %s'
+        val = toTuple(form, session['id'])
+        mycursor.execute(sql,val)
+        mydb.commit()
+        return redirect(url_for("home"))
 
 ## Start about-us
 

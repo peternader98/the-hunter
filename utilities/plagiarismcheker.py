@@ -1,6 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from werkzeug.utils import secure_filename
 
 def changeFileName(fileName):
     return ''.join(fileName[26:])

@@ -62,6 +62,7 @@
 						<div class="image img-cir img-120">
 							<img src="../static/uploads/users/{{currentUser['image']}}" alt="{{currentUser['name']}}" />
 						</div>
+						<a href="{{url_for('changePhoto')}}">change photo</a>
 						<h4 class="name">{{currentUser["name"]}}</h4>
 						<a href="{{url_for('logout')}}">Sign out</a>
 					</div>
@@ -131,6 +132,7 @@
 							<div class="image img-cir img-120">
 								<img src="../static/uploads/users/{{currentUser['image']}}" alt="{{currentUser['name']}}" />
 							</div>
+							<a href="{{url_for('changePhoto')}}">change photo</a>
 							<h4 class="name">{{currentUser["name"]}}</h4>
 							<a href="{{url_for('logout')}}">Sign out</a>
 						</div>
